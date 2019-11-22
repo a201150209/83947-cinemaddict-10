@@ -3,7 +3,7 @@
 const MaxFilms = {
   IN_MAIN_LIST: 5,
   IN_EXTRA_LIST: 2
-}
+};
 
 const selectorElement = {
   header: `header.header`,
@@ -34,8 +34,8 @@ const createFilmTemplate = () => {
         <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
       </form>
     </article>`
-  )
-}
+  );
+};
 
 const createDetailFilmTemplate = () => {
   return (
@@ -221,8 +221,8 @@ const createDetailFilmTemplate = () => {
         </div>
       </form>
     </section>`
-  )
-}
+  );
+};
 
 const createMenuTemplate = () => {
   return (
@@ -239,8 +239,8 @@ const createMenuTemplate = () => {
       <li><a href="#" class="sort__button">Sort by date</a></li>
       <li><a href="#" class="sort__button">Sort by rating</a></li>
     </ul>`
-  )
-}
+  );
+};
 
 const createFilmListsTemplate = () => {
   return (
@@ -262,14 +262,14 @@ const createFilmListsTemplate = () => {
         </div>
       </section>
     </section>`
-  )
-}
+  );
+};
 
 const createMoreButtonTemplate = () => {
   return (
     `<button class="films-list__show-more">Show more</button>`
-  )
-}
+  );
+};
 
 const createProfileTemplate = () => {
   return (
@@ -277,12 +277,12 @@ const createProfileTemplate = () => {
       <p class="profile__rating">Movie Buff</p>
       <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
     </section>`
-  )
-}
+  );
+};
 
 const renderTemplate = (element, template, place = `beforeend`) => {
   element.insertAdjacentHTML(place, template);
-}
+};
 
 const headerElement = document.querySelector(selectorElement.header);
 renderTemplate(headerElement, createProfileTemplate());
@@ -290,11 +290,11 @@ renderTemplate(headerElement, createProfileTemplate());
 const mainElement = document.querySelector(selectorElement.main);
 renderTemplate(mainElement, createMenuTemplate());
 renderTemplate(mainElement, createFilmListsTemplate());
-//renderTemplate(mainElement, createDetailFilmTemplate());
+renderTemplate(mainElement, createDetailFilmTemplate());
 
 
 
-const mainFilmsWrapperElement = mainElement.querySelector(selectorElement.mainFilmsWrapper)
+const mainFilmsWrapperElement = mainElement.querySelector(selectorElement.mainFilmsWrapper);
 for (let i = 0; i < MaxFilms.IN_MAIN_LIST; i++) {
   renderTemplate(mainFilmsWrapperElement, createFilmTemplate());
 }
