@@ -292,8 +292,6 @@ renderTemplate(mainElement, createMenuTemplate());
 renderTemplate(mainElement, createFilmListsTemplate());
 renderTemplate(mainElement, createDetailFilmTemplate());
 
-
-
 const mainFilmsWrapperElement = mainElement.querySelector(selectorElement.mainFilmsWrapper);
 for (let i = 0; i < MaxFilms.IN_MAIN_LIST; i++) {
   renderTemplate(mainFilmsWrapperElement, createFilmTemplate());
