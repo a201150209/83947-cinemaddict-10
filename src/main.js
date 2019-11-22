@@ -1,13 +1,16 @@
 'use strict';
 
-const MAX_CARDS_QUANTITY = 5;
+const MaxFilms = {
+  IN_MAIN_LIST: 5,
+  IN_EXTRA_LIST: 2
+}
 
 const selectorElement = {
   header: `header.header`,
   main: `main.main`,
   filmsList: `.films-list`,
-  filmsWrapper: `.films-list .films-list__container`,
-  filmsExtraWrapper: `.films-list--extra .films-list__container`,
+  mainFilmsWrapper: `.films-list .films-list__container`,
+  extraFilmsWrapper: `.films-list--extra .films-list__container`,
 
 };
 
@@ -281,24 +284,27 @@ const renderTemplate = (element, template, place = `beforeend`) => {
   element.insertAdjacentHTML(place, template);
 }
 
-const mainElement = document.querySelector(selectorElement.main);
-renderTemplate(mainElement, createMenuTemplate());
-renderTemplate(mainElement, createFilmListsTemplate());
-renderTemplate(mainElement, createDetailFilmTemplate());
-
 const headerElement = document.querySelector(selectorElement.header);
 renderTemplate(headerElement, createProfileTemplate());
 
-const filmsWrapperElement = mainElement.querySelector(selectorElement.filmsWrapper)
-for (let i = 0; i < MAX_CARDS_QUANTITY; i++) {
-  renderTemplate(filmsWrapperElement, createFilmTemplate());
+const mainElement = document.querySelector(selectorElement.main);
+renderTemplate(mainElement, createMenuTemplate());
+renderTemplate(mainElement, createFilmListsTemplate());
+//renderTemplate(mainElement, createDetailFilmTemplate());
+
+
+
+const mainFilmsWrapperElement = mainElement.querySelector(selectorElement.mainFilmsWrapper)
+for (let i = 0; i < MaxFilms.IN_MAIN_LIST; i++) {
+  renderTemplate(mainFilmsWrapperElement, createFilmTemplate());
 }
 
-const filmsExtraWrapperElements = Array.from(mainElement.querySelectorAll(selectorElement.filmsExtraWrapper));
-filmsExtraWrapperElements.forEach((item) => {
-  renderTemplate(item, createFilmTemplate());
-})
-
+const extraFilmsWrapperElements = Array.from(mainElement.querySelectorAll(selectorElement.extraFilmsWrapper));
+extraFilmsWrapperElements.forEach((item) => {
+  for (let i = 0; i < MaxFilms.IN_EXTRA_LIST; i++) {
+    renderTemplate(item, createFilmTemplate());
+  }
+});
 
 const filmsListElement = mainElement.querySelector(selectorElement.filmsList);
 renderTemplate(filmsListElement, createMoreButtonTemplate());
