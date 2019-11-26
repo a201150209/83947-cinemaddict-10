@@ -5,13 +5,12 @@ const MaxFilms = {
   IN_EXTRA_LIST: 2
 };
 
-const selectorElement = {
-  header: `header.header`,
-  main: `main.main`,
-  filmsList: `.films-list`,
-  mainFilmsWrapper: `.films-list .films-list__container`,
-  extraFilmsWrapper: `.films-list--extra .films-list__container`,
-
+const SelectorElement = {
+  HEADER: `header.header`,
+  MAIN: `main.main`,
+  FILM_LIST: `.films-list`,
+  MAIN_FILMS_WRAPPER: `.films-list .films-list__container`,
+  EXTRA_FILMS_WRAPPER: `.films-list--extra .films-list__container`
 };
 
 const createFilmTemplate = () => {
@@ -284,25 +283,25 @@ const renderTemplate = (element, template, place = `beforeend`) => {
   element.insertAdjacentHTML(place, template);
 };
 
-const headerElement = document.querySelector(selectorElement.header);
+const headerElement = document.querySelector(SelectorElement.HEADER);
 renderTemplate(headerElement, createProfileTemplate());
 
-const mainElement = document.querySelector(selectorElement.main);
+const mainElement = document.querySelector(SelectorElement.MAIN);
 renderTemplate(mainElement, createMenuTemplate());
 renderTemplate(mainElement, createFilmListsTemplate());
 renderTemplate(mainElement, createDetailFilmTemplate());
 
-const mainFilmsWrapperElement = mainElement.querySelector(selectorElement.mainFilmsWrapper);
+const mainFilmsWrapperElement = mainElement.querySelector(SelectorElement.MAIN_FILMS_WRAPPER);
 for (let i = 0; i < MaxFilms.IN_MAIN_LIST; i++) {
   renderTemplate(mainFilmsWrapperElement, createFilmTemplate());
 }
 
-const extraFilmsWrapperElements = Array.from(mainElement.querySelectorAll(selectorElement.extraFilmsWrapper));
+const extraFilmsWrapperElements = Array.from(mainElement.querySelectorAll(SelectorElement.EXTRA_FILMS_WRAPPER));
 extraFilmsWrapperElements.forEach((item) => {
   for (let i = 0; i < MaxFilms.IN_EXTRA_LIST; i++) {
     renderTemplate(item, createFilmTemplate());
   }
 });
 
-const filmsListElement = mainElement.querySelector(selectorElement.filmsList);
+const filmsListElement = mainElement.querySelector(SelectorElement.FILM_LIST);
 renderTemplate(filmsListElement, createMoreButtonTemplate());
