@@ -1,6 +1,4 @@
 import {renderTemplate} from './utils.js';
-import {mainElement} from '../main.js';
-
 
 const createFilmListsTemplate = () => {
   return (
@@ -25,6 +23,8 @@ const createFilmListsTemplate = () => {
   );
 };
 
-export const renderFilmList = () => {
-  renderTemplate(mainElement, createFilmListsTemplate());
+const renderFilmList = (parentElement) => {
+  renderTemplate(parentElement, createFilmListsTemplate());
 };
+
+export {renderFilmList};

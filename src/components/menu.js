@@ -1,32 +1,28 @@
 import {renderTemplate} from './utils.js';
-import {mainElement} from '../main.js';
-import {filmEntites} from './film.js';
 
-export let statistic;
+const getStatistic = (entites) => {
 
-const getStatistic = () => {
-
-  const stats = {
+  const statistic = {
     favorited: 0,
     watched: 0,
     marked: 0
   };
 
-  filmEntites.forEach((item) => {
+  entites.forEach((item) => {
     if (item.isFavorite) {
-      stats.favorited++;
+      statistic.favorited++;
     }
 
     if (item.isWatched) {
-      stats.watched++;
+      statistic.watched++;
     }
 
     if (item.isMarked) {
-      stats.marked++;
+      statistic.marked++;
     }
   });
 
-  return stats;
+  return statistic;
 };
 
 const createMenuTemplate = (stats) => {
@@ -48,7 +44,8 @@ const createMenuTemplate = (stats) => {
   );
 };
 
-export const renderMenu = () => {
-  statistic = getStatistic();
-  renderTemplate(mainElement, createMenuTemplate(statistic));
+const renderMenu = (parentElement, statistic) => {
+  renderTemplate(parentElement, createMenuTemplate(statistic));
 };
+
+export {getStatistic, renderMenu};

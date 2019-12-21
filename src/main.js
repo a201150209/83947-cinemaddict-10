@@ -1,10 +1,10 @@
 
 import {renderProfile} from './components/profile.js';
-import {renderMenu} from './components/menu.js';
+import {getStatistic, renderMenu} from './components/menu.js';
 import {renderFilmList} from './components/film-list.js';
-import {renderFilms, filmEntites} from './components/film.js';
+import {renderFilms, Film, FilmConfig, getRandomFilmEntity} from './components/film.js';
 import {renderLoadMoreButton} from './components/show-more-button.js';
-import {hideEmptyElement} from './components/utils.js';
+import {hideEmptyElement, sortArrWithObjByKey} from './components/utils.js';
 
 export const SelectorElement = {
   HEADER: `header.header`,
@@ -17,36 +17,42 @@ export const SelectorElement = {
   FILMS_COUNT: `.footer__statistics p`
 };
 
+const filmEntites = new Array(FilmConfig.Main.Count.MAX).fill(``).map(() => {
+  return new Film(getRandomFilmEntity());
+});
+const filmEntitesSortedByRaiting = sortArrWithObjByKey(filmEntites, FilmConfig.TopRated.SORT_PROPERTY);
+const filmEntitesSortedByCommentCount = sortArrWithObjByKey(filmEntites, FilmConfig.MostCommented.SORT_PROPERTY);
 
-export const mainElement = document.querySelector(SelectorElement.MAIN);
-renderMenu();
-renderFilmList();
+
+const mainElement = document.querySelector(SelectorElement.MAIN);
+const statistic = getStatistic(filmEntites);
+renderMenu(mainElement, statistic);
+renderFilmList(mainElement);
 
 const generalBlockElement = document.querySelector(SelectorElement.GENERAL);
-export const mainFilmListElement = generalBlockElement.querySelector(SelectorElement.FILM_LIST);
-renderFilms();
+const mainFilmListElement = generalBlockElement.querySelector(SelectorElement.FILM_LIST);
+renderFilms(mainFilmListElement, filmEntites, FilmConfig.Main);
 
 const topRatedBlockElement = document.querySelector(SelectorElement.TOP_RATED);
-export const topRatedFilmListElement = topRatedBlockElement.querySelector(SelectorElement.FILM_LIST);
-renderFilms(topRatedFilmListElement);
+const topRatedFilmListElement = topRatedBlockElement.querySelector(SelectorElement.FILM_LIST);
+renderFilms(topRatedFilmListElement, filmEntitesSortedByRaiting, FilmConfig.TopRated);
 hideEmptyElement(topRatedFilmListElement, topRatedBlockElement);
 
 const mostCommentedBlockElement = document.querySelector(SelectorElement.MOST_COMMENTED);
-export const mostCommentedFilmListElement = mostCommentedBlockElement.querySelector(SelectorElement.FILM_LIST);
-renderFilms(mostCommentedFilmListElement);
+const mostCommentedFilmListElement = mostCommentedBlockElement.querySelector(SelectorElement.FILM_LIST);
+renderFilms(mostCommentedFilmListElement, filmEntitesSortedByCommentCount, FilmConfig.TopRated);
 hideEmptyElement(mostCommentedFilmListElement, mostCommentedBlockElement);
-
 
 const filmsListElement = mainElement.querySelector(SelectorElement.GENERAL);
 renderLoadMoreButton(filmsListElement);
-
 
 const setFilmsCount = () => {
   const element = document.querySelector(SelectorElement.FILMS_COUNT);
   element.textContent = `${filmEntites.length} movies inside`;
 };
-
 setFilmsCount();
 
-export const headerElement = document.querySelector(SelectorElement.HEADER);
-renderProfile();
+const headerElement = document.querySelector(SelectorElement.HEADER);
+renderProfile(headerElement, statistic);
+
+export {mainFilmListElement, filmEntites};

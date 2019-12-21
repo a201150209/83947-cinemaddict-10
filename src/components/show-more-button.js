@@ -1,6 +1,6 @@
 import {renderTemplate, hideElement} from './utils.js';
 import {SelectorElement} from '../main.js';
-import {renderFilms, FilmConfig, currentFilmIndex} from './film.js';
+import {renderFilms, getIsMaxFilms} from './film.js';
 
 const createShowMoreButtonTemplate = () => {
   return (
@@ -15,7 +15,7 @@ const onButtonElementClick = function (evt) {
 };
 
 const hideButtonIfNoMoreFilms = (evt) => {
-  if (currentFilmIndex.main >= FilmConfig.Count.MAX) {
+  if (getIsMaxFilms()) {
     hideElement(evt.target);
   }
 };

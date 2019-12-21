@@ -1,34 +1,33 @@
 import {renderTemplate} from './utils.js';
-import {headerElement} from '../main.js';
-import {statistic} from './menu.js';
+
+
+const Raiting = {
+  0: ``,
+  10: `novice`,
+  20: `fan`,
+  Infinity: ` movie buff`
+};
+const raitingMap = new Map(Object.entries(Raiting));
 
 const getRaiting = (filmsCount) => {
-  let raiting;
-  const raitingMap = new Map([
-    [5, `Newcomer`],
-    [10, `Cinoman`],
-    [15, `Oldfag`]
-  ]);
-
+  let r;
   for (let key of raitingMap.keys()) {
     if (filmsCount <= key) {
-      raiting = raitingMap.get(key);
+      r = raitingMap.get(key);
       break;
     }
   }
-
-  return raiting;
+  return r;
 };
 
-
 class User {
-  constructor() {
-    this.raiting = getRaiting(statistic.watched);
+  constructor(raiting) {
+    this.raiting = raiting;
   }
 }
 
-const createProfileTemplate = () => {
-  const user = new User();
+const createProfileTemplate = (statistic) => {
+  const user = new User(getRaiting(statistic.watched));
   return (
     `<section class="header__profile profile">
       <p class="profile__rating">${user.raiting}</p>
@@ -37,6 +36,8 @@ const createProfileTemplate = () => {
   );
 };
 
-export const renderProfile = () => {
-  renderTemplate(headerElement, createProfileTemplate());
+const renderProfile = (parentElement, statistic) => {
+  renderTemplate(parentElement, createProfileTemplate(statistic));
 };
+
+export {renderProfile};

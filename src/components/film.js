@@ -1,6 +1,6 @@
 import * as utils from './utils.js';
 import {createFilmDetailTemplate} from './film-detail.js';
-import {mainFilmListElement, topRatedFilmListElement, mostCommentedFilmListElement, mainElement} from '../main.js';
+import {mainFilmListElement, filmEntites} from '../main.js';
 
 const mockText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
@@ -13,18 +13,34 @@ const lastNames = [`Kim`, `Kam`, `Kom`, `Abartvoog`, `Ooogdvv`, `International`]
 const countryNames = [`USA`, `USSR`, `Germany`, `UK`];
 const commentIconNames = [`smile`, `sleeping`, `puke`, `angry`];
 
-export const FilmConfig = {
-  Count: {
-    MAX: 15,
-    Load: {
-      MAIN: 5,
-      TOP_RATED: 2,
-      MOST_COMMENTED: 2
-    }
+const FilmConfig = {
+  Main: {
+    Count: {
+      MAX: 15,
+      LOAD: 5
+    },
+    NAME: `main`,
+    SORT_PROPERTY: `name`
+  },
+  TopRated: {
+    Count: {
+      MAX: 2,
+      LOAD: 2
+    },
+    NAME: `topRated`,
+    SORT_PROPERTY: `raiting`
+  },
+  MostCommented: {
+    Count: {
+      MAX: 2,
+      LOAD: 2
+    },
+    NAME: `topRated`,
+    SORT_PROPERTY: `raiting`
   }
 };
 
-export const currentFilmIndex = {
+const currentFilmIndex = {
   main: 0,
   topRated: 0,
   mostCommented: 0
@@ -51,8 +67,8 @@ const getDurationEntity = () => {
 const getCommentCount = (count) => {
   if (!count) {
     return `0 comment`;
-  } else if (count > 1) {
-    return `${count} comment`;
+  } else if (count === 1) {
+    return `1 comment`;
   }
   return `${count} comments`;
 };
@@ -125,78 +141,75 @@ const getActiveClass = (condition) => {
   return ``;
 };
 
+const getIsMaxFilms = () => {
+  if (currentFilmIndex.main >= FilmConfig.Main.Count.MAX) {
+    return true;
+  }
+  return false;
+};
+
+const getRandomFilmEntity = () => {
+  const entity = {
+    name: utils.getRandomArrayElements(mockWords, 5).join(` `),
+    originalName: utils.getRandomArrayElements(mockWords, 5).join(` `),
+    directorName: getPersonNames().toString(),
+    writerNames: getPersonNames(utils.getRandomNumber(1, 5)),
+    actorNames: getPersonNames(utils.getRandomNumber(1, 5)),
+    posterName: utils.getRandomArrayElements(posterNames).toString(),
+    description: utils.getRandomArrayElements(mockSentences, utils.getRandomNumber(1, 3)).toString(),
+    raiting: utils.getRandomNumber(0, 10, 1),
+    releaseDate: utils.getRandomDate(-50, 0),
+    duration: getDurationEntity(),
+    genres: utils.getRandomArrayElements(filmGenres, 3),
+    commentCount: utils.getRandomNumber(2, 7),
+    ageLimit: utils.getRandomNumber(0, 18),
+    countryName: utils.getRandomArrayElements(countryNames).toString(),
+    isWatched: utils.coinToss(),
+    isFavorite: utils.coinToss(),
+    isMarked: utils.coinToss()
+  };
+  entity.comments = getCommentEntities(entity.commentCount);
+  return entity;
+};
+
 class Film {
-  constructor() {
-    this.name = utils.getRandomArrayElements(mockWords, 5).join(` `);
-    this.originalName = utils.getRandomArrayElements(mockWords, 5).join(` `);
-    this.directorName = getPersonNames().toString();
-    this.writerNames = getPersonNames(utils.getRandomNumber(1, 5));
-    this.actorNames = getPersonNames(utils.getRandomNumber(1, 5));
-    this.posterName = utils.getRandomArrayElements(posterNames).toString();
-    this.description = utils.getRandomArrayElements(mockSentences, utils.getRandomNumber(1, 3)).toString();
-    this.raiting = utils.getRandomNumber(0, 10, 1);
-    this.releaseDate = utils.getRandomDate(-50, 0);
-    this.duration = getDurationEntity();
-    this.genres = utils.getRandomArrayElements(filmGenres, 3);
-    this.commentCount = utils.getRandomNumber(2, 7);
-    this.ageLimit = utils.getRandomNumber(0, 18);
-    this.countryName = utils.getRandomArrayElements(countryNames).toString();
-    this.comments = getCommentEntities(this.commentCount);
-    this.isWatched = utils.coinToss();
-    this.isFavorite = utils.coinToss();
-    this.isMarked = utils.coinToss();
+  constructor(entity) {
+    this.name = entity.name;
+    this.originalName = entity.originalName;
+    this.directorName = entity.directorName;
+    this.writerNames = entity.writerNames;
+    this.actorNames = entity.actorNames;
+    this.posterName = entity.posterName;
+    this.description = entity.description;
+    this.raiting = entity.raiting;
+    this.releaseDate = entity.releaseDate;
+    this.duration = entity.duration;
+    this.genres = entity.genres;
+    this.commentCount = entity.commentCount;
+    this.ageLimit = entity.ageLimit;
+    this.countryName = entity.countryName;
+    this.comments = entity.comments;
+    this.isWatched = entity.isWatched;
+    this.isFavorite = entity.isFavorite;
+    this.isMarked = entity.isMarked;
   }
 }
 
-export const filmEntites = new Array(FilmConfig.Count.MAX).fill(``).map(() => {
-  return new Film();
-});
+const renderFilms = (parentElement = mainFilmListElement, entities = filmEntites, config = FilmConfig.Main) => {
+  for (let i = 0; currentFilmIndex[config.NAME] < entities.length; currentFilmIndex[config.NAME]++) {
 
+    const isNotSortProperty = i === 0 && !entities[i][config.SORT_PROPERTY];
+    const isLimitLoad = i >= config.Count.LOAD;
 
-export const renderFilms = (parentElement = mainFilmListElement) => {
-  let indexName;
-  let loadConfigName;
-  let entities;
-  let property;
-
-  switch (parentElement) {
-    case mainFilmListElement || mainElement:
-      indexName = `main`;
-      loadConfigName = `MAIN`;
-      entities = filmEntites;
-      property = `name`;
-      break;
-    case topRatedFilmListElement:
-      indexName = `topRated`;
-      loadConfigName = `TOP_RATED`;
-      property = `raiting`;
-      entities = filmEntites.slice().sort((prev, next) => {
-        return next.raiting - prev.raiting;
-      });
-      break;
-    case mostCommentedFilmListElement:
-      indexName = `mostCommented`;
-      loadConfigName = `MOST_COMMENTED`;
-      property = `commentCount`;
-      entities = filmEntites.slice().sort((prev, next) => {
-        return next.commentCount - prev.commentCount;
-      });
-      break;
-  }
-
-  for (let i = 0; currentFilmIndex[indexName] < entities.length; currentFilmIndex[indexName]++) {
-    if (i === 0 && !entities[i][property]) {
+    if (isNotSortProperty || isLimitLoad) {
       break;
     }
 
-    if (i >= FilmConfig.Count.Load[loadConfigName]) {
-      break;
-    }
-
-    utils.renderTemplate(parentElement, createFilmTemplate(entities[currentFilmIndex[indexName]]));
-    utils.renderTemplate(parentElement, createFilmDetailTemplate(entities[currentFilmIndex[indexName]]));
+    utils.renderTemplate(parentElement, createFilmTemplate(entities[currentFilmIndex[config.NAME]]));
+    utils.renderTemplate(parentElement, createFilmDetailTemplate(entities[currentFilmIndex[config.NAME]]));
     i++;
   }
 };
 
+export {Film, FilmConfig, currentFilmIndex, getRandomFilmEntity, renderFilms, getIsMaxFilms};
 

@@ -93,3 +93,9 @@ export const hideEmptyElement = (checked, hidden) => {
     hideElement(hidden);
   }
 };
+
+export const sortArrWithObjByKey = (arr, key) => {
+  return arr.slice().sort((prev, next) => {
+    return next[key] - prev[key];
+  });
+};
