@@ -1,43 +1,58 @@
-import {renderTemplate} from './components/render.js';
-import {createProfileTemplate} from './components/profile.js';
-import {createMenuTemplate} from './components/menu.js';
-import {createFilmListsTemplate} from './components/film-list.js';
-import {createFilmDetailTemplate} from './components/film-detail.js';
-import {createFilmTemplate} from './components/film.js';
-import {createShowMoreButtonTemplate} from './components/show-more-button.js';
 
-const MaxFilms = {
-  IN_MAIN_LIST: 5,
-  IN_EXTRA_LIST: 2
-};
+import {renderProfile} from './components/profile.js';
+import {getStatistic, renderMenu} from './components/menu.js';
+import {renderFilmList} from './components/film-list.js';
+import {renderFilms, Film, FilmConfig, getRandomFilmEntity} from './components/film.js';
+import {renderLoadMoreButton} from './components/show-more-button.js';
+import {hideEmptyElement, sortArrWithObjByKey} from './components/utils.js';
 
-const SelectorElement = {
+export const SelectorElement = {
   HEADER: `header.header`,
   MAIN: `main.main`,
-  FILM_LIST: `.films-list`,
-  MAIN_FILMS_WRAPPER: `.films-list .films-list__container`,
-  EXTRA_FILMS_WRAPPER: `.films-list--extra .films-list__container`
+  GENERAL: `.films-list`,
+  TOP_RATED: `.films-list--extra.top-rated`,
+  MOST_COMMENTED: `.films-list--extra.most-commented`,
+  FILM_LIST: `.films-list__container`,
+  SHOW_MORE_BUTTON: `.films-list__show-more`,
+  FILMS_COUNT: `.footer__statistics p`
 };
 
-const headerElement = document.querySelector(SelectorElement.HEADER);
-renderTemplate(headerElement, createProfileTemplate());
+const filmEntites = new Array(FilmConfig.Main.Count.MAX).fill(``).map(() => {
+  return new Film(getRandomFilmEntity());
+});
+const filmEntitesSortedByRaiting = sortArrWithObjByKey(filmEntites, FilmConfig.TopRated.SORT_PROPERTY);
+const filmEntitesSortedByCommentCount = sortArrWithObjByKey(filmEntites, FilmConfig.MostCommented.SORT_PROPERTY);
+
 
 const mainElement = document.querySelector(SelectorElement.MAIN);
-renderTemplate(mainElement, createMenuTemplate());
-renderTemplate(mainElement, createFilmListsTemplate());
-renderTemplate(mainElement, createFilmDetailTemplate());
+const statistic = getStatistic(filmEntites);
+renderMenu(mainElement, statistic);
+renderFilmList(mainElement);
 
-const mainFilmsWrapperElement = mainElement.querySelector(SelectorElement.MAIN_FILMS_WRAPPER);
-for (let i = 0; i < MaxFilms.IN_MAIN_LIST; i++) {
-  renderTemplate(mainFilmsWrapperElement, createFilmTemplate());
-}
+const generalBlockElement = document.querySelector(SelectorElement.GENERAL);
+const mainFilmListElement = generalBlockElement.querySelector(SelectorElement.FILM_LIST);
+renderFilms(mainFilmListElement, filmEntites, FilmConfig.Main);
 
-const extraFilmsWrapperElements = Array.from(mainElement.querySelectorAll(SelectorElement.EXTRA_FILMS_WRAPPER));
-extraFilmsWrapperElements.forEach((item) => {
-  for (let i = 0; i < MaxFilms.IN_EXTRA_LIST; i++) {
-    renderTemplate(item, createFilmTemplate());
-  }
-});
+const topRatedBlockElement = document.querySelector(SelectorElement.TOP_RATED);
+const topRatedFilmListElement = topRatedBlockElement.querySelector(SelectorElement.FILM_LIST);
+renderFilms(topRatedFilmListElement, filmEntitesSortedByRaiting, FilmConfig.TopRated);
+hideEmptyElement(topRatedFilmListElement, topRatedBlockElement);
 
-const filmsListElement = mainElement.querySelector(SelectorElement.FILM_LIST);
-renderTemplate(filmsListElement, createShowMoreButtonTemplate());
+const mostCommentedBlockElement = document.querySelector(SelectorElement.MOST_COMMENTED);
+const mostCommentedFilmListElement = mostCommentedBlockElement.querySelector(SelectorElement.FILM_LIST);
+renderFilms(mostCommentedFilmListElement, filmEntitesSortedByCommentCount, FilmConfig.TopRated);
+hideEmptyElement(mostCommentedFilmListElement, mostCommentedBlockElement);
+
+const filmsListElement = mainElement.querySelector(SelectorElement.GENERAL);
+renderLoadMoreButton(filmsListElement);
+
+const setFilmsCount = () => {
+  const element = document.querySelector(SelectorElement.FILMS_COUNT);
+  element.textContent = `${filmEntites.length} movies inside`;
+};
+setFilmsCount();
+
+const headerElement = document.querySelector(SelectorElement.HEADER);
+renderProfile(headerElement, statistic);
+
+export {mainFilmListElement, filmEntites};

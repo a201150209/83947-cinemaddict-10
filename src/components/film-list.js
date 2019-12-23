@@ -1,4 +1,6 @@
-export const createFilmListsTemplate = () => {
+import {renderTemplate} from './utils.js';
+
+const createFilmListsTemplate = () => {
   return (
     `<section class="films">
       <section class="films-list">
@@ -7,12 +9,12 @@ export const createFilmListsTemplate = () => {
         <div class="films-list__container"></div>
       </section>
 
-      <section class="films-list--extra">
+      <section class="films-list--extra top-rated">
         <h2 class="films-list__title">Top rated</h2>
         <div class="films-list__container">
         </div>
       </section>
-      <section class="films-list--extra">
+      <section class="films-list--extra most-commented">
         <h2 class="films-list__title">Most commented</h2>
         <div class="films-list__container">
         </div>
@@ -20,3 +22,9 @@ export const createFilmListsTemplate = () => {
     </section>`
   );
 };
+
+const renderFilmList = (parentElement) => {
+  renderTemplate(parentElement, createFilmListsTemplate());
+};
+
+export {renderFilmList};
