@@ -1,6 +1,6 @@
 import {renderTemplate, hideElement} from './utils.js';
-import {SelectorElement} from '../main.js';
-import {renderFilms, getIsMaxFilms} from './film.js';
+import {renderFilmsInMainList, SelectorElement} from '../main.js';
+import {getIsMaxFilms} from './film.js';
 
 const createShowMoreButtonTemplate = () => {
   return (
@@ -10,7 +10,7 @@ const createShowMoreButtonTemplate = () => {
 
 const onButtonElementClick = function (evt) {
   evt.preventDefault();
-  renderFilms();
+  renderFilmsInMainList();
   hideButtonIfNoMoreFilms(evt);
 };
 

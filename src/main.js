@@ -1,8 +1,8 @@
 
-import {renderProfile} from './components/profile.js';
+import {renderProfile, getRaiting, User} from './components/profile.js';
 import {getStatistic, renderMenu} from './components/menu.js';
 import {renderFilmList} from './components/film-list.js';
-import {renderFilms, Film, FilmConfig, getRandomFilmEntity} from './components/film.js';
+import {renderFilms, Film, FilmConfig, getRandomFilmEntity, getEntitiesForRender} from './components/film.js';
 import {renderLoadMoreButton} from './components/show-more-button.js';
 import {hideEmptyElement, sortArrWithObjByKey} from './components/utils.js';
 
@@ -31,16 +31,21 @@ renderFilmList(mainElement);
 
 const generalBlockElement = document.querySelector(SelectorElement.GENERAL);
 const mainFilmListElement = generalBlockElement.querySelector(SelectorElement.FILM_LIST);
-renderFilms(mainFilmListElement, filmEntites, FilmConfig.Main);
+
+const renderFilmsInMainList = () => {
+  renderFilms(mainFilmListElement, getEntitiesForRender(filmEntites, FilmConfig.Main));
+};
+
+renderFilmsInMainList();
 
 const topRatedBlockElement = document.querySelector(SelectorElement.TOP_RATED);
 const topRatedFilmListElement = topRatedBlockElement.querySelector(SelectorElement.FILM_LIST);
-renderFilms(topRatedFilmListElement, filmEntitesSortedByRaiting, FilmConfig.TopRated);
+renderFilms(topRatedFilmListElement, getEntitiesForRender(filmEntitesSortedByRaiting, FilmConfig.TopRated));
 hideEmptyElement(topRatedFilmListElement, topRatedBlockElement);
 
 const mostCommentedBlockElement = document.querySelector(SelectorElement.MOST_COMMENTED);
 const mostCommentedFilmListElement = mostCommentedBlockElement.querySelector(SelectorElement.FILM_LIST);
-renderFilms(mostCommentedFilmListElement, filmEntitesSortedByCommentCount, FilmConfig.TopRated);
+renderFilms(mostCommentedFilmListElement, getEntitiesForRender(filmEntitesSortedByCommentCount, FilmConfig.MostCommented));
 hideEmptyElement(mostCommentedFilmListElement, mostCommentedBlockElement);
 
 const filmsListElement = mainElement.querySelector(SelectorElement.GENERAL);
@@ -53,6 +58,7 @@ const setFilmsCount = () => {
 setFilmsCount();
 
 const headerElement = document.querySelector(SelectorElement.HEADER);
-renderProfile(headerElement, statistic);
+const userEntity = new User(getRaiting(statistic.watched));
+renderProfile(headerElement, userEntity);
 
-export {mainFilmListElement, filmEntites};
+export {renderFilmsInMainList};

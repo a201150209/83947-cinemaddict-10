@@ -1,13 +1,12 @@
 import {renderTemplate} from './utils.js';
 
 
-const Raiting = {
+const raitingMap = new Map(Object.entries({
   0: ``,
   10: `novice`,
   20: `fan`,
   Infinity: ` movie buff`
-};
-const raitingMap = new Map(Object.entries(Raiting));
+}));
 
 const getRaiting = (filmsCount) => {
   let r;
@@ -26,8 +25,7 @@ class User {
   }
 }
 
-const createProfileTemplate = (statistic) => {
-  const user = new User(getRaiting(statistic.watched));
+const createProfileTemplate = (user) => {
   return (
     `<section class="header__profile profile">
       <p class="profile__rating">${user.raiting}</p>
@@ -40,4 +38,4 @@ const renderProfile = (parentElement, statistic) => {
   renderTemplate(parentElement, createProfileTemplate(statistic));
 };
 
-export {renderProfile};
+export {User, getRaiting, renderProfile};

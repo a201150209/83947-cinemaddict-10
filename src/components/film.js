@@ -1,6 +1,5 @@
 import * as utils from './utils.js';
 import {createFilmDetailTemplate} from './film-detail.js';
-import {mainFilmListElement, filmEntites} from '../main.js';
 
 const mockText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
@@ -35,8 +34,8 @@ const FilmConfig = {
       MAX: 2,
       LOAD: 2
     },
-    NAME: `topRated`,
-    SORT_PROPERTY: `raiting`
+    NAME: `mostCommented`,
+    SORT_PROPERTY: `commentCount`
   }
 };
 
@@ -99,7 +98,6 @@ const getRaiting = (raiting) => {
   }
   return raiting;
 };
-
 
 const createFilmTemplate = (entity) => {
   const DESCRIPTION_MAX_SYMBOLS = 140;
@@ -195,21 +193,30 @@ class Film {
   }
 }
 
-const renderFilms = (parentElement = mainFilmListElement, entities = filmEntites, config = FilmConfig.Main) => {
-  for (let i = 0; currentFilmIndex[config.NAME] < entities.length; currentFilmIndex[config.NAME]++) {
+const getEntitiesForRender = (entites, config) => {
+  let count;
 
-    const isNotSortProperty = i === 0 && !entities[i][config.SORT_PROPERTY];
-    const isLimitLoad = i >= config.Count.LOAD;
+  const isMaxLoad = currentFilmIndex[config.NAME] + config.Count.LOAD >= config.Count.MAX;
 
-    if (isNotSortProperty || isLimitLoad) {
-      break;
-    }
+  if (isMaxLoad) {
+    count = config.Count.MAX - currentFilmIndex[config.NAME];
+  } else {
+    count = config.Count.LOAD;
+  }
 
-    utils.renderTemplate(parentElement, createFilmTemplate(entities[currentFilmIndex[config.NAME]]));
-    utils.renderTemplate(parentElement, createFilmDetailTemplate(entities[currentFilmIndex[config.NAME]]));
-    i++;
+  const start = currentFilmIndex[config.NAME];
+  const end = currentFilmIndex[config.NAME] + count;
+  currentFilmIndex[config.NAME] += count;
+
+  return entites.slice(start, end);
+};
+
+const renderFilms = (parentElement, entities) => {
+  for (let i = 0; i < entities.length; i++) {
+    utils.renderTemplate(parentElement, createFilmTemplate(entities[i]));
+    utils.renderTemplate(parentElement, createFilmDetailTemplate(entities[i]));
   }
 };
 
-export {Film, FilmConfig, currentFilmIndex, getRandomFilmEntity, renderFilms, getIsMaxFilms};
+export {Film, FilmConfig, currentFilmIndex, getRandomFilmEntity, renderFilms, getIsMaxFilms, getEntitiesForRender};
 
