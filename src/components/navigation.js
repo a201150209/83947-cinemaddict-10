@@ -1,4 +1,4 @@
-import {renderElement, removeElementInClass, getElementInClass} from './utils.js';
+import {renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
 
 
 const createNavigationTemplate = (entity) => {
@@ -7,11 +7,13 @@ const createNavigationTemplate = (entity) => {
   const marked = entity._marked;
 
   return (
-    `<a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
+    `<nav class="main-navigation">
+      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
       <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${marked}</span></a>
       <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${watched}</span></a>
       <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favorited}</span></a>
-      <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>`
+      <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
+      </nav>`
   );
 };
 
@@ -22,21 +24,22 @@ class Navigation {
     this._marked = stats.marked;
   }
 
+
   getTemplate() {
-    return createNavigationTemplate(this);
+    return getTemplateInClass.call(this, createNavigationTemplate);
   }
 
-  getElement(propertyName, template) {
-    return getElementInClass.call(this, propertyName, template);
+  getElement() {
+    return getElementInClass.call(this);
+  }
+
+  renderElement(parentElement) {
+    renderElement(parentElement, this.getElement(), `afterbegin`);
   }
 
   removeElement(elementName) {
     return removeElementInClass.call(this, elementName);
   }
-
-  renderElement(parentElement) {
-    renderElement(parentElement, this.getElement('_element', this.getTemplate()));
-  }
 }
 
-export {Navigation as Menu};
+export {Navigation};

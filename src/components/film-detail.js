@@ -1,4 +1,11 @@
-import {MonthNames, createTemplateFromCollection} from './utils.js';
+import {MonthNames, createTemplateFromCollection, renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
+
+const SelectorElement = {
+  PARENT: `body`,
+  CLOSE_BUTTON: `.film-details__close-btn`
+}
+
+const parentElement = document.querySelector(SelectorElement.PARENT);
 
 const getGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;
@@ -31,16 +38,30 @@ const getCommentTemplate = (entity) => {
   );
 };
 
-export const createFilmDetailTemplate = (entity) => {
-  const releaseDate = `${entity.releaseDate.getDate()} ${MonthNames[entity.releaseDate.getMonth()]} ${entity.releaseDate.getFullYear()}`;
-  const writerNames = entity.writerNames.join(`, `);
-  const actorNames = entity.actorNames.join(`, `);
-  const duration = `${entity.duration.hour}h ${entity.duration.minut}m`;
-  const genres = createTemplateFromCollection(entity.genres, getGenreTemplate);
-  const comments = createTemplateFromCollection(entity.comments, getCommentTemplate);
+const onCloseButtonClick = function (evt) {
+  evt.preventDefault();
+  console.log(evt.currentTarget)
+}
+
+const createFilmDetailTemplate = (entity) => {
+  const releaseDate = `${entity._releaseDate.getDate()} ${MonthNames[entity._releaseDate.getMonth()]} ${entity._releaseDate.getFullYear()}`;
+  const writerNames = entity._writerNames.join(`, `);
+  const actorNames = entity._actorNames.join(`, `);
+  const duration = `${entity._duration.hour}h ${entity._duration.minut}m`;
+  const genres = createTemplateFromCollection(entity._genres, getGenreTemplate);
+  const comments = createTemplateFromCollection(entity._comments, getCommentTemplate);
   const isWatched = getCheckedStatus(entity.isWatched);
   const isFavorite = getCheckedStatus(entity.isFavorite);
   const isMarked = getCheckedStatus(entity.isMarked);
+  const posterName = entity._posterName;
+  const ageLimit = entity._ageLimit;
+  const title = entity._title;
+  const originalTitle = entity._originalTitle;
+  const raiting = entity._raiting;
+  const directorName = entity._directorName;
+  const countryName = entity._countryName;
+  const description = entity._description;
+  const commentCount = entity._commentCount;
 
   return (
     `<section class="film-details">
@@ -51,27 +72,27 @@ export const createFilmDetailTemplate = (entity) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="./images/posters/${entity.posterName}.jpg" alt="">
+              <img class="film-details__poster-img" src="./images/posters/${posterName}.jpg" alt="">
 
-              <p class="film-details__age">${entity.ageLimit}+</p>
+              <p class="film-details__age">${ageLimit}+</p>
             </div>
 
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
-                  <h3 class="film-details__title">${entity.name}</h3>
-                  <p class="film-details__title-original">Original: ${entity.originalName}</p>
+                  <h3 class="film-details__title">${title}</h3>
+                  <p class="film-details__title-original">Original: ${originalTitle}</p>
                 </div>
 
                 <div class="film-details__rating">
-                  <p class="film-details__total-rating">${entity.raiting}</p>
+                  <p class="film-details__total-rating">${raiting}</p>
                 </div>
               </div>
 
               <table class="film-details__table">
                 <tr class="film-details__row">
                   <td class="film-details__term">Director</td>
-                  <td class="film-details__cell">${entity.directorName}</td>
+                  <td class="film-details__cell">${directorName}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
@@ -91,7 +112,7 @@ export const createFilmDetailTemplate = (entity) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
-                  <td class="film-details__cell">${entity.countryName}</td>
+                  <td class="film-details__cell">${countryName}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Genres</td>
@@ -101,7 +122,7 @@ export const createFilmDetailTemplate = (entity) => {
               </table>
 
               <p class="film-details__film-description">
-                ${entity.description}
+                ${description}
               </p>
             </div>
           </div>
@@ -123,7 +144,7 @@ export const createFilmDetailTemplate = (entity) => {
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${entity.commentCount}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentCount}</span></h3>
 
             <ul class="film-details__comments-list">
               ${comments}
@@ -169,3 +190,49 @@ export const createFilmDetailTemplate = (entity) => {
     </section>`
   );
 };
+
+class FilmDetail {
+  constructor(entity) {
+    this._title = entity.title;
+    this._originalTitle = entity.originalTitle;
+    this._directorName = entity.directorName;
+    this._writerNames = entity.writerNames;
+    this._actorNames = entity.actorNames;
+    this._posterName = entity.posterName;
+    this._description = entity.description;
+    this._raiting = entity.raiting;
+    this._releaseDate = entity.releaseDate;
+    this._duration = entity.duration;
+    this._genres = entity.genres;
+    this._commentCount = entity.commentCount;
+    this._ageLimit = entity.ageLimit;
+    this._countryName = entity.countryName;
+    this._comments = entity.comments;
+    this._isWatched = entity.isWatched;
+    this._isFavorite = entity.isFavorite;
+    this._isMarked = entity.isMarked;
+  }
+
+  getTemplate() {
+    return getTemplateInClass.call(this, createFilmDetailTemplate);
+  }
+
+  getElement() {
+    return getElementInClass.call(this);
+  }
+
+  renderElement() {
+    renderElement(parentElement, this.getElement());
+    this.closeButtonElement.addEventListener(`click`, onCloseButtonClick);
+  }
+
+  removeElement(elementName) {
+    return removeElementInClass.call(this, elementName);
+  }
+
+  get closeButtonElement() {
+    return this._element.querySelector(SelectorElement.CLOSE_BUTTON)
+  }
+}
+
+export {FilmDetail};

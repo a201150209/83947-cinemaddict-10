@@ -1,5 +1,12 @@
 import * as utils from './utils.js';
-import {createFilmDetailTemplate} from './film-detail.js';
+import {FilmDetail} from './film-detail.js';
+import {generalFilmList} from '../main.js';
+
+const SelectorElement = {
+  POSTER: `.film-card__poster`,
+  TITLE: `.film-card__title`,
+  COMMENT_COUNT: `.film-card__comments`
+}
 
 const mockText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
@@ -11,40 +18,6 @@ const firstNames = [`Mark`, `Petr`, `Juno`, `Planeta Nibiru`, `Keks`, `Vasiliy`,
 const lastNames = [`Kim`, `Kam`, `Kom`, `Abartvoog`, `Ooogdvv`, `International`];
 const countryNames = [`USA`, `USSR`, `Germany`, `UK`];
 const commentIconNames = [`smile`, `sleeping`, `puke`, `angry`];
-
-const FilmConfig = {
-  Main: {
-    Count: {
-      MAX: 15,
-      LOAD: 5
-    },
-    NAME: `main`,
-    SORT_PROPERTY: `name`
-  },
-  TopRated: {
-    Count: {
-      MAX: 2,
-      LOAD: 2
-    },
-    NAME: `topRated`,
-    SORT_PROPERTY: `raiting`
-  },
-  MostCommented: {
-    Count: {
-      MAX: 2,
-      LOAD: 2
-    },
-    NAME: `mostCommented`,
-    SORT_PROPERTY: `commentCount`
-  }
-};
-
-const currentFilmIndex = {
-  main: 0,
-  topRated: 0,
-  mostCommented: 0
-};
-
 
 const getDuration = (entity) => {
   let hour = ``;
@@ -99,39 +72,6 @@ const getRaiting = (raiting) => {
   return raiting;
 };
 
-const createFilmTemplate = (entity) => {
-  const DESCRIPTION_MAX_SYMBOLS = 140;
-  const year = `${entity.releaseDate.getFullYear()}`;
-  const duration = getDuration(entity.duration);
-  const [genre] = entity.genres;
-  const commentCount = getCommentCount(entity.commentCount);
-  const description = entity.description.substr(0, DESCRIPTION_MAX_SYMBOLS);
-  const raiting = getRaiting(entity.raiting);
-  const isWatched = getActiveClass(entity.isWatched);
-  const isFavorite = getActiveClass(entity.isFavorite);
-  const isMarked = getActiveClass(entity.isMarked);
-
-  return (
-    `<article class="film-card">
-      <h3 class="film-card__title">${entity.name}</h3>
-      <p class="film-card__rating">${raiting}</p>
-      <p class="film-card__info">
-        <span class="film-card__year">${year}</span>
-        <span class="film-card__duration">${duration}</span>
-        <span class="film-card__genre">${genre}</span>
-      </p>
-      <img src="./images/posters/${entity.posterName}.jpg" alt="" class="film-card__poster">
-      <p class="film-card__description">${description}</p>
-      <a class="film-card__comments">${commentCount}</a>
-      <form class="film-card__controls">
-        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isMarked}">Add to watchlist</button>
-        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${isWatched}">Mark as watched</button>
-        <button class="film-card__controls-item button film-card__controls-item--favorite  ${isFavorite}">Mark as favorite</button>
-      </form>
-    </article>`
-  );
-};
-
 const getActiveClass = (condition) => {
   if (condition) {
     return `film-card__controls-item--active`;
@@ -139,17 +79,10 @@ const getActiveClass = (condition) => {
   return ``;
 };
 
-const getIsMaxFilms = () => {
-  if (currentFilmIndex.main >= FilmConfig.Main.Count.MAX) {
-    return true;
-  }
-  return false;
-};
-
 const getRandomFilmEntity = () => {
   const entity = {
-    name: utils.getRandomArrayElements(mockWords, 5).join(` `),
-    originalName: utils.getRandomArrayElements(mockWords, 5).join(` `),
+    title: utils.getRandomArrayElements(mockWords, 5).join(` `),
+    originalTitle: utils.getRandomArrayElements(mockWords, 5).join(` `),
     directorName: getPersonNames().toString(),
     writerNames: getPersonNames(utils.getRandomNumber(1, 5)),
     actorNames: getPersonNames(utils.getRandomNumber(1, 5)),
@@ -170,53 +103,111 @@ const getRandomFilmEntity = () => {
   return entity;
 };
 
+const onElementClick = function (evt) {
+  evt.preventDefault();
+  const element = this;
+  const currentClass = generalFilmList.films.find((item) => {
+    return item.element === element;
+  });
+
+  if (evt.target === currentClass.posterElement || currentClass.titleElement || currentClass.commentCountElement) {
+    const filmDetail = new FilmDetail(currentClass.entity);
+    filmDetail.renderElement();
+  }
+};
+
+
+const createFilmTemplate = (entity) => {
+  const DESCRIPTION_MAX_SYMBOLS = 140;
+  const title = entity._title;
+  const posterName = entity._posterName;
+  const year = `${entity._releaseDate.getFullYear()}`;
+  const duration = getDuration(entity._duration);
+  const [genre] = entity._genres;
+  const commentCount = getCommentCount(entity._commentCount);
+  const description = entity._description.substr(0, DESCRIPTION_MAX_SYMBOLS);
+  const raiting = getRaiting(entity._raiting);
+  const isWatched = getActiveClass(entity._isWatched);
+  const isFavorite = getActiveClass(entity._isFavorite);
+  const isMarked = getActiveClass(entity._isMarked);
+
+  return (
+    `<article class="film-card">
+      <h3 class="film-card__title">${title}</h3>
+      <p class="film-card__rating">${raiting}</p>
+      <p class="film-card__info">
+        <span class="film-card__year">${year}</span>
+        <span class="film-card__duration">${duration}</span>
+        <span class="film-card__genre">${genre}</span>
+      </p>
+      <img src="./images/posters/${posterName}.jpg" alt="" class="film-card__poster">
+      <p class="film-card__description">${description}</p>
+      <a class="film-card__comments">${commentCount}</a>
+      <form class="film-card__controls">
+        <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isMarked}">Add to watchlist</button>
+        <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${isWatched}">Mark as watched</button>
+        <button class="film-card__controls-item button film-card__controls-item--favorite  ${isFavorite}">Mark as favorite</button>
+      </form>
+    </article>`
+  );
+};
+
 class Film {
   constructor(entity) {
-    this.name = entity.name;
-    this.originalName = entity.originalName;
-    this.directorName = entity.directorName;
-    this.writerNames = entity.writerNames;
-    this.actorNames = entity.actorNames;
-    this.posterName = entity.posterName;
-    this.description = entity.description;
-    this.raiting = entity.raiting;
-    this.releaseDate = entity.releaseDate;
-    this.duration = entity.duration;
-    this.genres = entity.genres;
-    this.commentCount = entity.commentCount;
-    this.ageLimit = entity.ageLimit;
-    this.countryName = entity.countryName;
-    this.comments = entity.comments;
-    this.isWatched = entity.isWatched;
-    this.isFavorite = entity.isFavorite;
-    this.isMarked = entity.isMarked;
+    this._entity = entity;
+    this._title = entity.title;
+    this._posterName = entity.posterName;
+    this._description = entity.description;
+    this._raiting = entity.raiting;
+    this._releaseDate = entity.releaseDate;
+    this._duration = entity.duration;
+    this._genres = entity.genres;
+    this._commentCount = entity.commentCount;
+    this._isWatched = entity.isWatched;
+    this._isFavorite = entity.isFavorite;
+    this._isMarked = entity.isMarked;
+  }
+
+  getTemplate() {
+    return utils.getTemplateInClass.call(this, createFilmTemplate);
+  }
+
+  getElement() {
+    return utils.getElementInClass.call(this);
+  }
+
+  renderElement(parentElement) {
+    utils.renderElement(parentElement, this.getElement());
+  }
+
+  removeElement(elementName) {
+    return utils.removeElementInClass.call(this, elementName);
+  }
+
+  get entity() {
+    return this._entity;
+  }
+
+  get element() {
+    return this._element;
+  }
+
+  get posterElement() {
+    return this._element.querySelector(SelectorElement.POSTER);
+  }
+
+  get titleElement() {
+    return this._element.querySelector(SelectorElement.TITLE);
+  }
+
+  get commentCountElement() {
+    return this._element.querySelector(SelectorElement.COMMENT_COUNT);
+  }
+
+  addClickHandlerOnElement() {
+    this._element.addEventListener(`click`, onElementClick);
   }
 }
 
-const getEntitiesForRender = (entites, config) => {
-  let count;
-
-  const isMaxLoad = currentFilmIndex[config.NAME] + config.Count.LOAD >= config.Count.MAX;
-
-  if (isMaxLoad) {
-    count = config.Count.MAX - currentFilmIndex[config.NAME];
-  } else {
-    count = config.Count.LOAD;
-  }
-
-  const start = currentFilmIndex[config.NAME];
-  const end = currentFilmIndex[config.NAME] + count;
-  currentFilmIndex[config.NAME] += count;
-
-  return entites.slice(start, end);
-};
-
-const renderFilms = (parentElement, entities) => {
-  for (let i = 0; i < entities.length; i++) {
-    utils.renderTemplate(parentElement, createFilmTemplate(entities[i]));
-    utils.renderTemplate(parentElement, createFilmDetailTemplate(entities[i]));
-  }
-};
-
-export {Film, FilmConfig, currentFilmIndex, getRandomFilmEntity, renderFilms, getIsMaxFilms, getEntitiesForRender};
+export {Film, getRandomFilmEntity};
 
