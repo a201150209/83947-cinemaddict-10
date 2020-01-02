@@ -88,10 +88,10 @@ class FilmList {
     }
     return this._containerElement;
   }
-
-  removeElement(elementName = `_element`) {
-    this[elementName].remove();
-    return removeElementInClass.call(this, elementName);
+  
+  removeElement() {
+    this._element.remove();
+    this._element = null;
   }
 
   hideEmptyElement() {

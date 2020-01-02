@@ -27,9 +27,9 @@ class Profile {
     renderElement(parentElement, this.getElement());
   }
 
-  removeElement(elementName = `_element`) {
-    this[elementName].remove();
-    return removeElementInClass.call(this, elementName);
+  removeElement() {
+    this._element.remove();
+    this._element = null;
   }
 
 }

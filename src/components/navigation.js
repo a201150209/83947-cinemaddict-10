@@ -37,9 +37,9 @@ class Navigation {
     renderElement(parentElement, this.getElement(), `afterbegin`);
   }
 
-  removeElement(elementName = `_element`) {
-    this[elementName].remove();
-    return removeElementInClass.call(this, elementName);
+  removeElement() {
+    this._element.remove();
+    this._element = null;
   }
 }
 
