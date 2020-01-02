@@ -98,14 +98,14 @@ const getStatistic = (entites) => {
 };
 
 const getRaiting = (filmsCount) => {
-  let r;
+  let raiting;
   for (let key of raitingMap.keys()) {
     if (filmsCount <= key) {
-      r = raitingMap.get(key);
+      raiting = raitingMap.get(key);
       break;
     }
   }
-  return r;
+  return raiting;
 };
 
 
@@ -127,7 +127,7 @@ const renderFilms = (config, filmList) => {
 };
 
 const renderFilmsInGeneralList = () => {
-  renderFilms(FilmListConfig.General, generalFilmList)
+  renderFilms(FilmListConfig.General, generalFilmList);
   generalFilmList.showNoData();
 };
 

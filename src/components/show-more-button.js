@@ -23,11 +23,11 @@ const createShowMoreButtonTemplate = () => {
 
 class ShowMoreButton {
   getTemplate() {
-    return getTemplateInClass.call(this, createShowMoreButtonTemplate);
+    return getTemplateInClass(this, createShowMoreButtonTemplate);
   }
 
   getElement() {
-    return getElementInClass.call(this);
+    return getElementInClass(this);
   }
 
   renderElement(parentElement, renderedFilms) {
@@ -38,8 +38,7 @@ class ShowMoreButton {
   }
 
   removeElement() {
-    this._element.remove();
-    this._element = null;
+    removeElementInClass(this);
   }
 }
 

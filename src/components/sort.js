@@ -12,11 +12,11 @@ const createSortTemplate = () => {
 
 class Sort {
   getTemplate() {
-    return getTemplateInClass.call(this, createSortTemplate);
+    return getTemplateInClass(this, createSortTemplate);
   }
 
   getElement() {
-    return getElementInClass.call(this);
+    return getElementInClass(this);
   }
 
   renderElement(parentElement) {
@@ -24,8 +24,7 @@ class Sort {
   }
 
   removeElement() {
-    this._element.remove();
-    this._element = null;
+    removeElementInClass(this);
   }
 }
 

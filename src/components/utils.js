@@ -104,23 +104,21 @@ export const createElementFromTemplate = (template) => {
   return wrapper.children[0];
 };
 
-export const getTemplateInClass = function (func, propertyName = `_template`) {
-  if (!this[propertyName]) {
-    this[propertyName] = func(this);
+export const getTemplateInClass = function (currentClass, func, propertyName = `_template`) {
+  if (!currentClass[propertyName]) {
+    currentClass[propertyName] = func(currentClass);
   }
-  return this[propertyName];
+  return currentClass[propertyName];
 };
 
-export const getElementInClass = function (propertyName = `_element`, template = this.getTemplate()) {
-  if (!this[propertyName]) {
-    this[propertyName] = createElementFromTemplate(template);
+export const getElementInClass = function (currentClass, propertyName = `_element`, template = currentClass.getTemplate()) {
+  if (!currentClass[propertyName]) {
+    currentClass[propertyName] = createElementFromTemplate(template);
   }
-  return this[propertyName];
+  return currentClass[propertyName];
 };
 
-export const removeEluementInClass = function (elementName) {
-  if (this[elementName]) {
-    this[elementName] = null;
-  }
-  return this[elementName];
+export const removeElementInClass = (currentClass) => {
+  currentClass._element.remove();
+  currentClass._element = null;
 };

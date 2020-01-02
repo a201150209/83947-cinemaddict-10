@@ -9,10 +9,7 @@ const currentFilmIndex = {
 };
 
 const getTitleHiddenClass = (isHidden) => {
-  if (isHidden) {
-    return FilmListConfig.Title.HIDDEN_CLASS_NAME;
-  }
-  return ``;
+  return isHidden ? FilmListConfig.Title.HIDDEN_CLASS_NAME : ``;
 };
 
 const createFilmListTemplate = (entity) => {
@@ -48,10 +45,7 @@ const getEntitiesForRender = (entites, config) => {
 };
 
 const getIsMaxFilms = () => {
-  if (currentFilmIndex.general >= FilmListConfig.General.Count.MAX) {
-    return true;
-  }
-  return false;
+  return currentFilmIndex.general >= FilmListConfig.General.Count.MAX ? true : false;
 };
 
 
@@ -71,11 +65,11 @@ class FilmList {
   }
 
   getTemplate() {
-    return getTemplateInClass.call(this, createFilmListTemplate);
+    return getTemplateInClass(this, createFilmListTemplate);
   }
 
   getElement() {
-    return getElementInClass.call(this);
+    return getElementInClass(this);
   }
 
   renderElement(parentElement) {
@@ -88,10 +82,9 @@ class FilmList {
     }
     return this._containerElement;
   }
-  
+
   removeElement() {
-    this._element.remove();
-    this._element = null;
+    removeElementInClass(this);
   }
 
   hideEmptyElement() {

@@ -26,11 +26,11 @@ class Navigation {
 
 
   getTemplate() {
-    return getTemplateInClass.call(this, createNavigationTemplate);
+    return getTemplateInClass(this, createNavigationTemplate);
   }
 
   getElement() {
-    return getElementInClass.call(this);
+    return getElementInClass(this);
   }
 
   renderElement(parentElement) {
@@ -38,8 +38,7 @@ class Navigation {
   }
 
   removeElement() {
-    this._element.remove();
-    this._element = null;
+    removeElementInClass(this);
   }
 }
 

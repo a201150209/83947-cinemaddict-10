@@ -218,11 +218,11 @@ class FilmDetail {
   }
 
   getTemplate() {
-    return getTemplateInClass.call(this, createFilmDetailTemplate);
+    return getTemplateInClass(this, createFilmDetailTemplate);
   }
 
   getElement() {
-    return getElementInClass.call(this);
+    return getElementInClass(this);
   }
 
   renderElement() {
@@ -232,8 +232,7 @@ class FilmDetail {
   }
 
   removeElement() {
-    this._element.remove();
-    this._element = null;
+    removeElementInClass(this);
   }
 
   get closeButtonElement() {

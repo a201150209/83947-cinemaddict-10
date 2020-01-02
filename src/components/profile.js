@@ -16,11 +16,11 @@ class Profile {
   }
 
   getTemplate() {
-    return getTemplateInClass.call(this, createProfileTemplate);
+    return getTemplateInClass(this, createProfileTemplate);
   }
 
   getElement() {
-    return getElementInClass.call(this);
+    return getElementInClass(this);
   }
 
   renderElement(parentElement) {
@@ -28,8 +28,7 @@ class Profile {
   }
 
   removeElement() {
-    this._element.remove();
-    this._element = null;
+    removeElementInClass(this);
   }
 
 }

@@ -2,6 +2,8 @@ import * as utils from './utils.js';
 import {FilmDetail} from './film-detail.js';
 import {renderedFilms} from '../main.js';
 
+const DESCRIPTION_MAX_SYMBOLS = 140;
+
 const SelectorElement = {
   POSTER: `.film-card__poster`,
   TITLE: `.film-card__title`,
@@ -117,7 +119,6 @@ const onElementClick = function (evt) {
 };
 
 const createFilmTemplate = (entity) => {
-  const DESCRIPTION_MAX_SYMBOLS = 140;
   const title = entity._title;
   const posterName = entity._posterName;
   const year = `${entity._releaseDate.getFullYear()}`;
@@ -168,11 +169,11 @@ class Film {
   }
 
   getTemplate() {
-    return utils.getTemplateInClass.call(this, createFilmTemplate);
+    return utils.getTemplateInClass(this, createFilmTemplate);
   }
 
   getElement() {
-    return utils.getElementInClass.call(this);
+    return utils.getElementInClass(this);
   }
 
   renderElement(parentElement) {
@@ -180,8 +181,7 @@ class Film {
   }
 
   removeElement() {
-    this._element.remove();
-    this._element = null;
+    utils.removeElementInClass(this);
   }
 
   get entity() {
