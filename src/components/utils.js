@@ -13,6 +13,10 @@ export const MonthNames = [
   `December`
 ];
 
+export const Keycode = {
+  ESC: 27
+};
+
 
 export const getRandomNumber = (min, max, float = 0) => {
   let number = +((Math.random() * (max - min + 1)) + min).toFixed(float);
