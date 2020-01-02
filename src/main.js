@@ -4,7 +4,6 @@ import {Navigation} from './components/navigation.js';
 import {Sort} from './components/sort.js';
 import {FilmList, getEntitiesForRender} from './components/film-list.js';
 import {Film, getRandomFilmEntity} from './components/film.js';
-import {FilmDetail} from './components/film-detail.js';
 import {ShowMoreButton} from './components/show-more-button.js';
 import {sortArrWithObjByKey} from './components/utils.js';
 

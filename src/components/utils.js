@@ -99,7 +99,7 @@ export const sortArrWithObjByKey = (arr, key) => {
 };
 
 export const createElementFromTemplate = (template) => {
-  const wrapper = document.createElement('div');
+  const wrapper = document.createElement(`div`);
   renderTemplate(wrapper, template);
   return wrapper.children[0];
 };
@@ -118,8 +118,9 @@ export const getElementInClass = function (propertyName = `_element`, template =
   return this[propertyName];
 };
 
-export const removeElementInClass = function (elementName) {
+export const removeEluementInClass = function (elementName) {
   if (this[elementName]) {
-    return this[elementName] = null;
+    this[elementName] = null;
   }
+  return this[elementName];
 };

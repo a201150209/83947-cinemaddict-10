@@ -7,7 +7,7 @@ const createSortTemplate = () => {
       <li><a href="#" class="sort__button">Sort by date</a></li>
       <li><a href="#" class="sort__button">Sort by rating</a></li>
     </ul>`
-  )
+  );
 };
 
 class Sort {
@@ -20,7 +20,7 @@ class Sort {
   }
 
   renderElement(parentElement) {
-    renderElement(parentElement, this.getElement(), 'afterbegin');
+    renderElement(parentElement, this.getElement(), `afterbegin`);
   }
 
   removeElement(elementName = `_element`) {

@@ -1,4 +1,4 @@
-import {renderElement, hideElement, getElementInClass, getTemplateInClass} from './utils.js';
+import {renderElement, hideElement, getElementInClass, getTemplateInClass, removeElementInClass} from './utils.js';
 import {renderFilmsInGeneralList} from '../main.js';
 import {getIsMaxFilms} from './film-list.js';
 
@@ -43,4 +43,4 @@ class ShowMoreButton {
   }
 }
 
-export {ShowMoreButton}
+export {ShowMoreButton};

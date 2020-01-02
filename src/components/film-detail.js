@@ -3,7 +3,7 @@ import {MonthNames, createTemplateFromCollection, renderElement, removeElementIn
 const SelectorElement = {
   PARENT: `body`,
   CLOSE_BUTTON: `.film-details__close-btn`
-}
+};
 
 let renderedFilmDetail;
 
@@ -45,7 +45,7 @@ const onElementClick = function (evt) {
   if (evt.target === renderedFilmDetail.closeButtonElement) {
     renderedFilmDetail.removeElement();
   }
-}
+};
 
 const createFilmDetailTemplate = (entity) => {
   const releaseDate = `${entity._releaseDate.getDate()} ${MonthNames[entity._releaseDate.getMonth()]} ${entity._releaseDate.getFullYear()}`;

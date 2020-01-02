@@ -13,7 +13,7 @@ const getTitleHiddenClass = (isHidden) => {
     return FilmListConfig.Title.HIDDEN_CLASS_NAME;
   }
   return ``;
-}
+};
 
 const createFilmListTemplate = (entity) => {
   const classModificator = entity._classModificator;
@@ -32,11 +32,7 @@ const getEntitiesForRender = (entites, config) => {
 
   const isMaxLoad = currentFilmIndex[config.NAME] + config.Count.LOAD >= config.Count.MAX;
 
-  if (isMaxLoad) {
-    count = config.Count.MAX - currentFilmIndex[config.NAME];
-  } else {
-    count = config.Count.LOAD;
-  }
+  count = isMaxLoad ? config.Count.MAX - currentFilmIndex[config.NAME] : config.Count.LOAD;
 
   const start = currentFilmIndex[config.NAME];
   const end = currentFilmIndex[config.NAME] + count;
