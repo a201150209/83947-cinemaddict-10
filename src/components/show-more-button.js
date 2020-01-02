@@ -30,14 +30,15 @@ class ShowMoreButton {
     return getElementInClass.call(this);
   }
 
-  renderElement(parentElement, films) {
-    if (films.length) {
+  renderElement(parentElement, renderedFilms) {
+    if (renderedFilms.length) {
       renderElement(parentElement, this.getElement());
       this._element.addEventListener(`click`, onButtonElementClick);
     }
   }
 
-  removeElement(elementName) {
+  removeElement(elementName = `_element`) {
+    this[elementName].remove();
     return removeElementInClass.call(this, elementName);
   }
 }

@@ -5,6 +5,8 @@ const SelectorElement = {
   CLOSE_BUTTON: `.film-details__close-btn`
 }
 
+let renderedFilmDetail;
+
 const parentElement = document.querySelector(SelectorElement.PARENT);
 
 const getGenreTemplate = (genre) => {
@@ -38,9 +40,11 @@ const getCommentTemplate = (entity) => {
   );
 };
 
-const onCloseButtonClick = function (evt) {
+const onElementClick = function (evt) {
   evt.preventDefault();
-  console.log(evt.currentTarget)
+  if (evt.target === renderedFilmDetail.closeButtonElement) {
+    renderedFilmDetail.removeElement();
+  }
 }
 
 const createFilmDetailTemplate = (entity) => {
@@ -223,15 +227,17 @@ class FilmDetail {
 
   renderElement() {
     renderElement(parentElement, this.getElement());
-    this.closeButtonElement.addEventListener(`click`, onCloseButtonClick);
+    this._element.addEventListener(`click`, onElementClick);
+    renderedFilmDetail = this;
   }
 
-  removeElement(elementName) {
+  removeElement(elementName = `_element`) {
+    this[elementName].remove();
     return removeElementInClass.call(this, elementName);
   }
 
   get closeButtonElement() {
-    return this._element.querySelector(SelectorElement.CLOSE_BUTTON)
+    return this._element.querySelector(SelectorElement.CLOSE_BUTTON);
   }
 }
 

@@ -22,6 +22,8 @@ const raitingMap = new Map(Object.entries({
   Infinity: ` movie buff`
 }));
 
+const renderedFilms = [];
+
 const FilmListConfig = {
   General: {
     Count: {
@@ -121,11 +123,7 @@ const renderFilms = (config, filmList) => {
     film.renderElement(filmList.getContainerElement());
     film.addClickHandlerOnElement();
 
-    filmList.films.push(film);
-
-    /*const filmDetail = new FilmDetail(item);
-    filmDetail.renderElement();
-    filmList.filmsDetail.push(filmDetail);*/
+    renderedFilms.push(film);
   });
 };
 
@@ -165,7 +163,7 @@ mostCommentedFilmList.renderElement(contentElement);
 renderFilmsInExtraList(FilmListConfig.MostCommented, mostCommentedFilmList);
 
 const showMoreButton = new ShowMoreButton();
-showMoreButton.renderElement(generalFilmList.element, generalFilmList.films);
+showMoreButton.renderElement(generalFilmList.element, renderedFilms);
 
 const setFilmsCount = () => {
   const element = document.querySelector(SelectorElement.FILMS_COUNT);
@@ -173,4 +171,4 @@ const setFilmsCount = () => {
 };
 setFilmsCount();
 
-export {FilmListConfig, renderFilmsInGeneralList, generalFilmList};
+export {FilmListConfig, renderFilmsInGeneralList, renderedFilms};

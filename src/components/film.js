@@ -1,6 +1,6 @@
 import * as utils from './utils.js';
 import {FilmDetail} from './film-detail.js';
-import {generalFilmList} from '../main.js';
+import {renderedFilms, renderedFilmDetail} from '../main.js';
 
 const SelectorElement = {
   POSTER: `.film-card__poster`,
@@ -105,8 +105,8 @@ const getRandomFilmEntity = () => {
 
 const onElementClick = function (evt) {
   evt.preventDefault();
-  const element = this;
-  const currentClass = generalFilmList.films.find((item) => {
+  const element = evt.currentTarget;
+  const currentClass = renderedFilms.find((item) => {
     return item.element === element;
   });
 
@@ -180,8 +180,9 @@ class Film {
     utils.renderElement(parentElement, this.getElement());
   }
 
-  removeElement(elementName) {
-    return utils.removeElementInClass.call(this, elementName);
+  removeElement(elementName = `_element`) {
+    this[elementName].remove();
+    return removeElementInClass.call(this, elementName);
   }
 
   get entity() {

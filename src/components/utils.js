@@ -118,7 +118,7 @@ export const getElementInClass = function (propertyName = `_element`, template =
   return this[propertyName];
 };
 
-export const removeElementInClass = function (elementName = `_element`) {
+export const removeElementInClass = function (elementName) {
   if (this[elementName]) {
     return this[elementName] = null;
   }

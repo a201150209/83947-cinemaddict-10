@@ -1,6 +1,7 @@
 import {renderElement, removeElementInClass, getElementInClass, hideElement, getTemplateInClass} from './utils.js';
 import {FilmListConfig} from '../main.js';
 
+
 const currentFilmIndex = {
   general: 0,
   topRated: 0,
@@ -63,7 +64,6 @@ class FilmList {
     this._classModificator = entity.Template.CLASS_MODIFICATOR;
     this._title = entity.Template.TITLE;
     this._isTitleHidden = entity.Template.IS_TITLE_HIDDEN;
-    this._films = [];
   }
 
   get element() {
@@ -72,10 +72,6 @@ class FilmList {
 
   get containerElement() {
     return this.getContainerElement();
-  }
-
-  get films() {
-    return this._films;
   }
 
   getTemplate() {
@@ -97,18 +93,19 @@ class FilmList {
     return this._containerElement;
   }
 
-  removeElement(elementName) {
+  removeElement(elementName = `_element`) {
+    this[elementName].remove();
     return removeElementInClass.call(this, elementName);
   }
 
   hideEmptyElement() {
-    if (this.films.length === 0) {
+    if (this.getContainerElement().children.length === 0) {
       hideElement(this._element);
     }
   }
 
   showNoData() {
-    if (this.films.length === 0) {
+    if (this.getContainerElement().children.length === 0) {
       const titleElement = this._element.querySelector(FilmListConfig.Title.SELECTOR);
       titleElement.textContent = FilmListConfig.General.Template.TITLE_NO_FILMS;
       titleElement.classList.remove(FilmListConfig.Title.HIDDEN_CLASS_NAME);
