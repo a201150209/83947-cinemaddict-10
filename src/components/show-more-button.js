@@ -1,16 +1,11 @@
-import {renderTemplate, hideElement} from './utils.js';
-import {SelectorElement} from '../main.js';
-import {renderFilms, getIsMaxFilms} from './film.js';
+import {renderElement, hideElement, getElementInClass, getTemplateInClass, removeElementInClass} from './utils.js';
+import {renderFilmsInGeneralList} from '../main.js';
+import {getIsMaxFilms} from './film-list.js';
 
-const createShowMoreButtonTemplate = () => {
-  return (
-    `<button class="films-list__show-more">Show more</button>`
-  );
-};
 
 const onButtonElementClick = function (evt) {
   evt.preventDefault();
-  renderFilms();
+  renderFilmsInGeneralList();
   hideButtonIfNoMoreFilms(evt);
 };
 
@@ -20,9 +15,31 @@ const hideButtonIfNoMoreFilms = (evt) => {
   }
 };
 
-export const renderLoadMoreButton = (parentElement) => {
-  renderTemplate(parentElement, createShowMoreButtonTemplate());
-
-  const buttonElement = parentElement.querySelector(SelectorElement.SHOW_MORE_BUTTON);
-  buttonElement.addEventListener(`click`, onButtonElementClick);
+const createShowMoreButtonTemplate = () => {
+  return (
+    `<button class="films-list__show-more">Show more</button>`
+  );
 };
+
+class ShowMoreButton {
+  getTemplate() {
+    return getTemplateInClass(this, createShowMoreButtonTemplate);
+  }
+
+  getElement() {
+    return getElementInClass(this);
+  }
+
+  renderElement(parentElement, renderedFilms) {
+    if (renderedFilms.length) {
+      renderElement(parentElement, this.getElement());
+      this._element.addEventListener(`click`, onButtonElementClick);
+    }
+  }
+
+  removeElement() {
+    removeElementInClass(this);
+  }
+}
+
+export {ShowMoreButton};

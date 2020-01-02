@@ -80,22 +80,45 @@ export const createTemplateFromCollection = (collection, func) => {
   }).join(`\n`);
 };
 
-export const renderTemplate = (element, template, place = `beforeend`) => {
-  element.insertAdjacentHTML(place, template);
+export const renderElement = (parentElement, element, place = `beforeend`) => {
+  parentElement.insertAdjacentElement(place, element);
+};
+
+export const renderTemplate = (parentElement, template, place = `beforeend`) => {
+  parentElement.insertAdjacentHTML(place, template);
 };
 
 export const hideElement = (element) => {
   element.style.display = `none`;
 };
 
-export const hideEmptyElement = (checked, hidden) => {
-  if (checked.children.length === 0) {
-    hideElement(hidden);
-  }
-};
-
 export const sortArrWithObjByKey = (arr, key) => {
   return arr.slice().sort((prev, next) => {
     return next[key] - prev[key];
   });
+};
+
+export const createElementFromTemplate = (template) => {
+  const wrapper = document.createElement(`div`);
+  renderTemplate(wrapper, template);
+  return wrapper.children[0];
+};
+
+export const getTemplateInClass = function (currentClass, func, propertyName = `_template`) {
+  if (!currentClass[propertyName]) {
+    currentClass[propertyName] = func(currentClass);
+  }
+  return currentClass[propertyName];
+};
+
+export const getElementInClass = function (currentClass, propertyName = `_element`, template = currentClass.getTemplate()) {
+  if (!currentClass[propertyName]) {
+    currentClass[propertyName] = createElementFromTemplate(template);
+  }
+  return currentClass[propertyName];
+};
+
+export const removeElementInClass = (currentClass) => {
+  currentClass._element.remove();
+  currentClass._element = null;
 };
