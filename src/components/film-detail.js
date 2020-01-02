@@ -1,11 +1,11 @@
-import {MonthNames, createTemplateFromCollection, renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
+import {MonthNames, Keycode, createTemplateFromCollection, renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
 
 const SelectorElement = {
   PARENT: `body`,
   CLOSE_BUTTON: `.film-details__close-btn`
 };
 
-let renderedFilmDetail;
+let renderedFilmDetail = null;
 
 const parentElement = document.querySelector(SelectorElement.PARENT);
 
@@ -38,6 +38,13 @@ const getCommentTemplate = (entity) => {
       </div>
     </li>`
   );
+};
+
+const onDocumentKeydown = function (evt) {
+  evt.preventDefault();
+  if (evt.keyCode === Keycode.ESC) {
+    renderedFilmDetail.removeElement();
+  }
 };
 
 const onElementClick = function (evt) {
@@ -229,10 +236,12 @@ class FilmDetail {
     renderElement(parentElement, this.getElement());
     this._element.addEventListener(`click`, onElementClick);
     renderedFilmDetail = this;
+    document.addEventListener(`keydown`, onDocumentKeydown);
   }
 
   removeElement() {
     removeElementInClass(this);
+    document.removeEventListener(`keydown`, onDocumentKeydown);
   }
 
   get closeButtonElement() {

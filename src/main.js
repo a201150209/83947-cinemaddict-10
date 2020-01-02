@@ -23,6 +23,7 @@ const raitingMap = new Map(Object.entries({
 
 const renderedFilms = [];
 
+
 const FilmListConfig = {
   General: {
     Count: {
@@ -73,6 +74,11 @@ const FilmListConfig = {
   }
 };
 
+const filmEntites = new Array(FilmListConfig.General.Count.MAX).fill(``).map(() => {
+  return getRandomFilmEntity();
+});
+
+
 const getStatistic = (entites) => {
   const statistic = {
     favorited: 0,
@@ -108,12 +114,6 @@ const getRaiting = (filmsCount) => {
   return raiting;
 };
 
-
-const filmEntites = new Array(FilmListConfig.General.Count.MAX).fill(``).map(() => {
-  return getRandomFilmEntity();
-});
-
-
 const renderFilms = (config, filmList) => {
   const entities = sortArrWithObjByKey(filmEntites, config.SORT_PROPERTY);
 
@@ -135,6 +135,7 @@ const renderFilmsInExtraList = (config, filmList) => {
   renderFilms(config, filmList);
   filmList.hideEmptyElement();
 };
+
 
 const headerElement = document.querySelector(SelectorElement.HEADER);
 const mainElement = document.querySelector(SelectorElement.MAIN);
