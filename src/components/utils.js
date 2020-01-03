@@ -108,18 +108,15 @@ export const createElementFromTemplate = (template) => {
   return wrapper.children[0];
 };
 
-export const getTemplateInClass = function (currentClass, func, propertyName = `_template`) {
-  if (!currentClass[propertyName]) {
-    currentClass[propertyName] = func(currentClass);
-  }
-  return currentClass[propertyName];
+export const getTemplateInClass = function (currentClass, func) {
+  return func(currentClass);
 };
 
-export const getElementInClass = function (currentClass, propertyName = `_element`, template = currentClass.getTemplate()) {
-  if (!currentClass[propertyName]) {
-    currentClass[propertyName] = createElementFromTemplate(template);
+export const getElementInClass = function (currentClass) {
+  if (!currentClass._element) {
+    currentClass._element = createElementFromTemplate(currentClass.getTemplate());
   }
-  return currentClass[propertyName];
+  return currentClass._element;
 };
 
 export const removeElementInClass = (currentClass) => {

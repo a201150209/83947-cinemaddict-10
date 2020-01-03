@@ -1,19 +1,4 @@
-import {renderElement, hideElement, getElementInClass, getTemplateInClass, removeElementInClass} from './utils.js';
-import {renderFilmsInGeneralList} from '../main.js';
-import {getIsMaxFilms} from './film-list.js';
-
-
-const onButtonElementClick = function (evt) {
-  evt.preventDefault();
-  renderFilmsInGeneralList();
-  hideButtonIfNoMoreFilms(evt);
-};
-
-const hideButtonIfNoMoreFilms = (evt) => {
-  if (getIsMaxFilms()) {
-    hideElement(evt.target);
-  }
-};
+import {renderElement, getElementInClass, getTemplateInClass, removeElementInClass} from './utils.js';
 
 const createShowMoreButtonTemplate = () => {
   return (
@@ -30,15 +15,16 @@ class ShowMoreButton {
     return getElementInClass(this);
   }
 
-  renderElement(parentElement, renderedFilms) {
-    if (renderedFilms.length) {
-      renderElement(parentElement, this.getElement());
-      this._element.addEventListener(`click`, onButtonElementClick);
-    }
+  renderElement(parentElement) {
+    renderElement(parentElement, this.getElement());
   }
 
   removeElement() {
     removeElementInClass(this);
+  }
+
+  addClickHandlerOnElement(handler) {
+    this._element.addEventListener(`click`, handler);
   }
 }
 

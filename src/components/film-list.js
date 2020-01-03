@@ -1,4 +1,4 @@
-import {renderElement, removeElementInClass, getElementInClass, hideElement, getTemplateInClass} from './utils.js';
+import {renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
 import {FilmListConfig} from '../main.js';
 
 
@@ -89,7 +89,7 @@ class FilmList {
 
   hideEmptyElement() {
     if (this.getContainerElement().children.length === 0) {
-      hideElement(this._element);
+      this.removeElement();
     }
   }
 

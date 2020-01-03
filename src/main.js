@@ -2,27 +2,22 @@
 import {Profile} from './components/profile.js';
 import {Navigation} from './components/navigation.js';
 import {Sort} from './components/sort.js';
-import {FilmList, getEntitiesForRender} from './components/film-list.js';
+import {FilmList, getEntitiesForRender, getIsMaxFilms} from './components/film-list.js';
 import {Film, getRandomFilmEntity} from './components/film.js';
+import {FilmDetail} from './components/film-detail.js';
 import {ShowMoreButton} from './components/show-more-button.js';
-import {sortArrWithObjByKey} from './components/utils.js';
+import {Keycode, sortArrWithObjByKey} from './components/utils.js';
 
-const SelectorElement = {
-  HEADER: `.header`,
-  MAIN: `.main`,
-  CONTENT: `.films`,
-  FILMS_COUNT: `.footer__statistics p`
+const ClassName = {
+  HEADER: `header`,
+  MAIN: `main`,
+  CONTENT: `films`,
+  FILMS_COUNT: `footer__statistics p`,
+  FILM_POSTER: `film-card__poster`,
+  FILM_TITLE: `film-card__title`,
+  FILM_COMMENT_COUNT: `film-card__comments`,
+  FILM_DETAIL_CLOSE_BUTTON: `film-details__close-btn`
 };
-
-const raitingMap = new Map(Object.entries({
-  0: ``,
-  10: `novice`,
-  20: `fan`,
-  Infinity: ` movie buff`
-}));
-
-const renderedFilms = [];
-
 
 const FilmListConfig = {
   General: {
@@ -33,7 +28,6 @@ const FilmListConfig = {
     Template: {
       CLASS_MODIFICATOR: ``,
       TITLE: `All movies. Upcoming`,
-      TITLE_NO_FILMS: `There are no movies in our database`,
       IS_TITLE_HIDDEN: true
     },
     NAME: `general`,
@@ -65,6 +59,15 @@ const FilmListConfig = {
     NAME: `mostCommented`,
     SORT_PROPERTY: `commentCount`
   },
+  NoData: {
+    Template: {
+      CLASS_MODIFICATOR: ``,
+      TITLE: `There are no movies in our database`,
+      IS_TITLE_HIDDEN: false
+    },
+    NAME: `general`,
+    SORT_PROPERTY: `title`
+  },
   Title: {
     SELECTOR: `.films-list__title`,
     HIDDEN_CLASS_NAME: `visually-hidden`
@@ -74,10 +77,11 @@ const FilmListConfig = {
   }
 };
 
-const filmEntites = new Array(FilmListConfig.General.Count.MAX).fill(``).map(() => {
-  return getRandomFilmEntity();
-});
+let currentFilmDetail = null;
 
+const filmEntites = new Array(FilmListConfig.General.Count.MAX).fill(``).map((item, i) => {
+  return getRandomFilmEntity(i);
+});
 
 const getStatistic = (entites) => {
   const statistic = {
@@ -104,6 +108,13 @@ const getStatistic = (entites) => {
 };
 
 const getRaiting = (filmsCount) => {
+  const raitingMap = new Map(Object.entries({
+    0: ``,
+    10: `novice`,
+    20: `fan`,
+    Infinity: ` movie buff`
+  }));
+
   let raiting;
   for (let key of raitingMap.keys()) {
     if (filmsCount <= key) {
@@ -114,21 +125,57 @@ const getRaiting = (filmsCount) => {
   return raiting;
 };
 
+const onFilmElementClick = (evt) => {
+  evt.preventDefault();
+  const element = evt.currentTarget;
+  const currentEntity = filmEntites[element.dataset.id];
+
+  if (evt.target.classList.contains(ClassName.FILM_POSTER || ClassName.FILM_TITLE || ClassName.FILM_COMMENT_COUNT)) {
+
+    currentFilmDetail = new FilmDetail(currentEntity);
+    currentFilmDetail.renderElement();
+    currentFilmDetail.addClickHandlerOnElement(onFilmDetailElementClick);
+    document.addEventListener(`keydown`, onDocumentKeydown);
+  }
+};
+
+const onFilmDetailElementClick = (evt) => {
+  evt.preventDefault();
+  if (evt.target.classList.contains(ClassName.FILM_DETAIL_CLOSE_BUTTON)) {
+    currentFilmDetail.removeElement();
+    document.removeEventListener(`keydown`, onDocumentKeydown);
+  }
+};
+
+const onShowMoreButtonElementClick = (evt) => {
+  evt.preventDefault();
+  renderFilmsInGeneralList();
+  if (getIsMaxFilms()) {
+    showMoreButton.removeElement();
+  }
+};
+
+const onDocumentKeydown = (evt) => {
+  evt.preventDefault();
+  if (evt.keyCode === Keycode.ESC) {
+    currentFilmDetail.removeElement();
+    document.removeEventListener(`keydown`, onDocumentKeydown);
+  }
+};
+
 const renderFilms = (config, filmList) => {
   const entities = sortArrWithObjByKey(filmEntites, config.SORT_PROPERTY);
 
   getEntitiesForRender(entities, config).forEach((item) => {
     const film = new Film(item);
     film.renderElement(filmList.getContainerElement());
-    film.addClickHandlerOnElement();
-
-    renderedFilms.push(film);
+    film.addClickHandlerOnElement(onFilmElementClick);
   });
 };
 
 const renderFilmsInGeneralList = () => {
   renderFilms(FilmListConfig.General, generalFilmList);
-  generalFilmList.showNoData();
+  generalFilmList.hideEmptyElement();
 };
 
 const renderFilmsInExtraList = (config, filmList) => {
@@ -136,10 +183,9 @@ const renderFilmsInExtraList = (config, filmList) => {
   filmList.hideEmptyElement();
 };
 
-
-const headerElement = document.querySelector(SelectorElement.HEADER);
-const mainElement = document.querySelector(SelectorElement.MAIN);
-const contentElement = mainElement.querySelector(SelectorElement.CONTENT);
+const headerElement = document.querySelector(`.${ClassName.HEADER}`);
+const mainElement = document.querySelector(`.${ClassName.MAIN}`);
+const contentElement = mainElement.querySelector(`.${ClassName.CONTENT}`);
 
 const statistic = getStatistic(filmEntites);
 const profile = new Profile(getRaiting(statistic.watched));
@@ -149,6 +195,10 @@ sort.renderElement(mainElement);
 const navigation = new Navigation(statistic);
 navigation.renderElement(mainElement);
 
+if (filmEntites.length === 0) {
+  const noDataFilmList = new FilmList(FilmListConfig.NoData);
+  noDataFilmList.renderElement(contentElement);
+}
 
 const generalFilmList = new FilmList(FilmListConfig.General);
 generalFilmList.renderElement(contentElement);
@@ -163,12 +213,13 @@ mostCommentedFilmList.renderElement(contentElement);
 renderFilmsInExtraList(FilmListConfig.MostCommented, mostCommentedFilmList);
 
 const showMoreButton = new ShowMoreButton();
-showMoreButton.renderElement(generalFilmList.element, renderedFilms);
+showMoreButton.renderElement(generalFilmList.element);
+showMoreButton.addClickHandlerOnElement(onShowMoreButtonElementClick);
 
 const setFilmsCount = () => {
-  const element = document.querySelector(SelectorElement.FILMS_COUNT);
+  const element = document.querySelector(`.${ClassName.FILMS_COUNT}`);
   element.textContent = `${filmEntites.length} movies inside`;
 };
 setFilmsCount();
 
-export {FilmListConfig, renderFilmsInGeneralList, renderedFilms};
+export {FilmListConfig, renderFilmsInGeneralList};
