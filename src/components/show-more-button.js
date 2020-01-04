@@ -1,4 +1,4 @@
-import {renderElement, getElementInClass, getTemplateInClass, removeElementInClass} from './utils.js';
+import Abstract from './abstract.js';
 
 const createShowMoreButtonTemplate = () => {
   return (
@@ -6,25 +6,10 @@ const createShowMoreButtonTemplate = () => {
   );
 };
 
-class ShowMoreButton {
-  getTemplate() {
-    return getTemplateInClass(this, createShowMoreButtonTemplate);
-  }
-
-  getElement() {
-    return getElementInClass(this);
-  }
-
-  renderElement(parentElement) {
-    renderElement(parentElement, this.getElement());
-  }
-
-  removeElement() {
-    removeElementInClass(this);
-  }
-
-  addClickHandlerOnElement(handler) {
-    this._element.addEventListener(`click`, handler);
+class ShowMoreButton extends Abstract {
+  constructor() {
+    super();
+    this._createTemplateFunc = createShowMoreButtonTemplate;
   }
 }
 

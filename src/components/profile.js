@@ -1,7 +1,7 @@
-import {renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
+import Abstract from './abstract.js';
 
 const createProfileTemplate = (entity) => {
-  const raiting = entity._raiting;
+  const raiting = entity;
   return (
     `<section class="header__profile profile">
       <p class="profile__rating">${raiting}</p>
@@ -10,27 +10,12 @@ const createProfileTemplate = (entity) => {
   );
 };
 
-class Profile {
-  constructor(raiting) {
-    this._raiting = raiting;
+class Profile extends Abstract {
+  constructor(entity) {
+    super();
+    this._entity = entity;
+    this._createTemplateFunc = createProfileTemplate;
   }
-
-  getTemplate() {
-    return getTemplateInClass(this, createProfileTemplate);
-  }
-
-  getElement() {
-    return getElementInClass(this);
-  }
-
-  renderElement(parentElement) {
-    renderElement(parentElement, this.getElement());
-  }
-
-  removeElement() {
-    removeElementInClass(this);
-  }
-
 }
 
 export {Profile};

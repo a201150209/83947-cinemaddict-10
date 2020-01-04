@@ -1,5 +1,5 @@
-import {renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
 import {FilmListConfig} from '../main.js';
+import Abstract from './abstract.js';
 
 
 const currentFilmIndex = {
@@ -13,9 +13,9 @@ const getTitleHiddenClass = (isHidden) => {
 };
 
 const createFilmListTemplate = (entity) => {
-  const classModificator = entity._classModificator;
-  const title = entity._title;
-  const hiddenClassName = getTitleHiddenClass(entity._isTitleHidden);
+  const classModificator = entity.Template.CLASS_MODIFICATOR;
+  const title = entity.Template.TITLE;
+  const hiddenClassName = getTitleHiddenClass(entity.Template.IS_TITLE_HIDDEN);
   return (
     `<section class="films-list${classModificator}">
         <h2 class="films-list__title ${hiddenClassName}">${title}</h2>
@@ -49,31 +49,11 @@ const getIsMaxFilms = () => {
 };
 
 
-class FilmList {
+class FilmList extends Abstract {
   constructor(entity) {
-    this._classModificator = entity.Template.CLASS_MODIFICATOR;
-    this._title = entity.Template.TITLE;
-    this._isTitleHidden = entity.Template.IS_TITLE_HIDDEN;
-  }
-
-  get element() {
-    return this.getElement();
-  }
-
-  get containerElement() {
-    return this.getContainerElement();
-  }
-
-  getTemplate() {
-    return getTemplateInClass(this, createFilmListTemplate);
-  }
-
-  getElement() {
-    return getElementInClass(this);
-  }
-
-  renderElement(parentElement) {
-    renderElement(parentElement, this.getElement());
+    super();
+    this._entity = entity;
+    this._createTemplateFunc = createFilmListTemplate;
   }
 
   getContainerElement() {
@@ -81,10 +61,6 @@ class FilmList {
       this._containerElement = this._element.querySelector(FilmListConfig.Container.SELECTOR);
     }
     return this._containerElement;
-  }
-
-  removeElement() {
-    removeElementInClass(this);
   }
 
   hideEmptyElement() {

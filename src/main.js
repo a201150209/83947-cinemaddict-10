@@ -129,11 +129,12 @@ const onFilmElementClick = (evt) => {
   evt.preventDefault();
   const element = evt.currentTarget;
   const currentEntity = filmEntites[element.dataset.id];
+  console.log(evt.target.classList.contains(ClassName.FILM_POSTER || ClassName.FILM_TITLE || ClassName.FILM_COMMENT_COUNT))
 
-  if (evt.target.classList.contains(ClassName.FILM_POSTER || ClassName.FILM_TITLE || ClassName.FILM_COMMENT_COUNT)) {
+  if (evt.target.classList.contains(ClassName.FILM_TITLE || ClassName.FILM_COMMENT_COUNT)) {
 
     currentFilmDetail = new FilmDetail(currentEntity);
-    currentFilmDetail.renderElement();
+    currentFilmDetail.renderElement(document.body);
     currentFilmDetail.addClickHandlerOnElement(onFilmDetailElementClick);
     document.addEventListener(`keydown`, onDocumentKeydown);
   }
@@ -191,9 +192,9 @@ const statistic = getStatistic(filmEntites);
 const profile = new Profile(getRaiting(statistic.watched));
 profile.renderElement(headerElement);
 const sort = new Sort();
-sort.renderElement(mainElement);
+sort.renderElement(mainElement, `afterbegin`);
 const navigation = new Navigation(statistic);
-navigation.renderElement(mainElement);
+navigation.renderElement(mainElement, `afterbegin`);
 
 if (filmEntites.length === 0) {
   const noDataFilmList = new FilmList(FilmListConfig.NoData);
@@ -213,7 +214,7 @@ mostCommentedFilmList.renderElement(contentElement);
 renderFilmsInExtraList(FilmListConfig.MostCommented, mostCommentedFilmList);
 
 const showMoreButton = new ShowMoreButton();
-showMoreButton.renderElement(generalFilmList.element);
+showMoreButton.renderElement(generalFilmList.getElement());
 showMoreButton.addClickHandlerOnElement(onShowMoreButtonElementClick);
 
 const setFilmsCount = () => {

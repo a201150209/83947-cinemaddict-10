@@ -1,4 +1,5 @@
 import * as utils from './utils.js';
+import Abstract from './abstract.js';
 
 const DESCRIPTION_MAX_SYMBOLS = 140;
 
@@ -134,30 +135,11 @@ const createFilmTemplate = (entity) => {
   );
 };
 
-class Film {
+class Film extends Abstract {
   constructor(entity) {
-    this._film = entity;
-    this._element = null;
-  }
-
-  getTemplate() {
-    return utils.getTemplateInClass(this._film, createFilmTemplate);
-  }
-
-  getElement() {
-    return utils.getElementInClass(this);
-  }
-
-  renderElement(parentElement) {
-    utils.renderElement(parentElement, this.getElement());
-  }
-
-  removeElement() {
-    utils.removeElementInClass(this);
-  }
-
-  addClickHandlerOnElement(handler) {
-    this._element.addEventListener(`click`, handler);
+    super();
+    this._entity = entity;
+    this._createTemplateFunc = createFilmTemplate;
   }
 }
 

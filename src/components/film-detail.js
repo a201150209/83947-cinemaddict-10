@@ -1,10 +1,5 @@
-import {MonthNames, createTemplateFromCollection, renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
-
-const SelectorElement = {
-  PARENT: `body`
-};
-
-const parentElement = document.querySelector(SelectorElement.PARENT);
+import {MonthNames, createTemplateFromCollection} from './utils.js';
+import Abstract from './abstract.js';
 
 const getGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;
@@ -183,30 +178,11 @@ const createFilmDetailTemplate = (entity) => {
   );
 };
 
-class FilmDetail {
+class FilmDetail extends Abstract {
   constructor(entity) {
-    this._filmDetail = entity;
-    this._element = null;
-  }
-
-  getTemplate() {
-    return getTemplateInClass(this._filmDetail, createFilmDetailTemplate);
-  }
-
-  getElement() {
-    return getElementInClass(this);
-  }
-
-  renderElement() {
-    renderElement(parentElement, this.getElement());
-  }
-
-  removeElement() {
-    removeElementInClass(this);
-  }
-
-  addClickHandlerOnElement(handler) {
-    this._element.addEventListener(`click`, handler);
+    super();
+    this._entity = entity;
+    this._createTemplateFunc = createFilmDetailTemplate;
   }
 }
 
