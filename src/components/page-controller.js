@@ -18,9 +18,13 @@ class PageController {
       evt.preventDefault();
       const element = evt.currentTarget;
       const currentEntity = filmEntites[element.dataset.id];
-      // console.log(evt.target.classList.contains(ClassName.FILM_POSTER || ClassName.FILM_TITLE || ClassName.FILM_COMMENT_COUNT))
-      if (evt.target.matches(`.${ClassName.FILM_POSTER}` || `.${ClassName.FILM_TITLE}` || `.${ClassName.FILM_COMMENT_COUNT}`)) {
+      const classes = [ClassName.FILM_POSTER, ClassName.FILM_TITLE, ClassName.FILM_COMMENT_COUNT]
 
+      const isTargetElement = evt.target.classList.contains(classes.find((item) => {
+        return evt.target.classList.contains(item);
+      }));
+
+      if (isTargetElement) {
         currentFilmDetail = new FilmDetail(currentEntity);
         currentFilmDetail.renderElement(document.body);
         currentFilmDetail.addClickHandlerOnElement(onFilmDetailElementClick);
