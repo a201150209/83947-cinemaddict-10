@@ -1,10 +1,9 @@
-import {renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
-
+import Abstract from './abstract.js';
 
 const createNavigationTemplate = (entity) => {
-  const favorited = entity._favorited;
-  const watched = entity._watched;
-  const marked = entity._marked;
+  const favorited = entity.favorited;
+  const watched = entity.watched;
+  const marked = entity.marked;
 
   return (
     `<nav class="main-navigation">
@@ -17,28 +16,11 @@ const createNavigationTemplate = (entity) => {
   );
 };
 
-class Navigation {
-  constructor(stats) {
-    this._favorited = stats.favorited;
-    this._watched = stats.watched;
-    this._marked = stats.marked;
-  }
-
-
-  getTemplate() {
-    return getTemplateInClass(this, createNavigationTemplate);
-  }
-
-  getElement() {
-    return getElementInClass(this);
-  }
-
-  renderElement(parentElement) {
-    renderElement(parentElement, this.getElement(), `afterbegin`);
-  }
-
-  removeElement() {
-    removeElementInClass(this);
+class Navigation extends Abstract {
+  constructor(entity) {
+    super();
+    this._entity = entity;
+    this._createTemplateFunc = createNavigationTemplate;
   }
 }
 

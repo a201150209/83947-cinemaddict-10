@@ -1,23 +1,12 @@
-import {MonthNames, Keycode, createTemplateFromCollection, renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
-
-const SelectorElement = {
-  PARENT: `body`,
-  CLOSE_BUTTON: `.film-details__close-btn`
-};
-
-let renderedFilmDetail = null;
-
-const parentElement = document.querySelector(SelectorElement.PARENT);
+import {MonthNames, createTemplateFromCollection} from './utils.js';
+import Abstract from './abstract.js';
 
 const getGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;
 };
 
 const getCheckedStatus = (condition) => {
-  if (condition) {
-    return `checked`;
-  }
-  return ``;
+  return condition ? `checked` : ``;
 };
 
 const getCommentTemplate = (entity) => {
@@ -40,39 +29,26 @@ const getCommentTemplate = (entity) => {
   );
 };
 
-const onDocumentKeydown = function (evt) {
-  evt.preventDefault();
-  if (evt.keyCode === Keycode.ESC) {
-    renderedFilmDetail.removeElement();
-  }
-};
-
-const onElementClick = function (evt) {
-  evt.preventDefault();
-  if (evt.target === renderedFilmDetail.closeButtonElement) {
-    renderedFilmDetail.removeElement();
-  }
-};
 
 const createFilmDetailTemplate = (entity) => {
-  const releaseDate = `${entity._releaseDate.getDate()} ${MonthNames[entity._releaseDate.getMonth()]} ${entity._releaseDate.getFullYear()}`;
-  const writerNames = entity._writerNames.join(`, `);
-  const actorNames = entity._actorNames.join(`, `);
-  const duration = `${entity._duration.hour}h ${entity._duration.minut}m`;
-  const genres = createTemplateFromCollection(entity._genres, getGenreTemplate);
-  const comments = createTemplateFromCollection(entity._comments, getCommentTemplate);
+  const releaseDate = `${entity.releaseDate.getDate()} ${MonthNames[entity.releaseDate.getMonth()]} ${entity.releaseDate.getFullYear()}`;
+  const writerNames = entity.writerNames.join(`, `);
+  const actorNames = entity.actorNames.join(`, `);
+  const duration = `${entity.duration.hour}h ${entity.duration.minut}m`;
+  const genres = createTemplateFromCollection(entity.genres, getGenreTemplate);
+  const comments = createTemplateFromCollection(entity.comments, getCommentTemplate);
   const isWatched = getCheckedStatus(entity.isWatched);
   const isFavorite = getCheckedStatus(entity.isFavorite);
   const isMarked = getCheckedStatus(entity.isMarked);
-  const posterName = entity._posterName;
-  const ageLimit = entity._ageLimit;
-  const title = entity._title;
-  const originalTitle = entity._originalTitle;
-  const raiting = entity._raiting;
-  const directorName = entity._directorName;
-  const countryName = entity._countryName;
-  const description = entity._description;
-  const commentCount = entity._commentCount;
+  const posterName = entity.posterName;
+  const ageLimit = entity.ageLimit;
+  const title = entity.title;
+  const originalTitle = entity.originalTitle;
+  const raiting = entity.raiting;
+  const directorName = entity.directorName;
+  const countryName = entity.countryName;
+  const description = entity.description;
+  const commentCount = entity.commentCount;
 
   return (
     `<section class="film-details">
@@ -202,50 +178,11 @@ const createFilmDetailTemplate = (entity) => {
   );
 };
 
-class FilmDetail {
+class FilmDetail extends Abstract {
   constructor(entity) {
-    this._title = entity.title;
-    this._originalTitle = entity.originalTitle;
-    this._directorName = entity.directorName;
-    this._writerNames = entity.writerNames;
-    this._actorNames = entity.actorNames;
-    this._posterName = entity.posterName;
-    this._description = entity.description;
-    this._raiting = entity.raiting;
-    this._releaseDate = entity.releaseDate;
-    this._duration = entity.duration;
-    this._genres = entity.genres;
-    this._commentCount = entity.commentCount;
-    this._ageLimit = entity.ageLimit;
-    this._countryName = entity.countryName;
-    this._comments = entity.comments;
-    this._isWatched = entity.isWatched;
-    this._isFavorite = entity.isFavorite;
-    this._isMarked = entity.isMarked;
-  }
-
-  getTemplate() {
-    return getTemplateInClass(this, createFilmDetailTemplate);
-  }
-
-  getElement() {
-    return getElementInClass(this);
-  }
-
-  renderElement() {
-    renderElement(parentElement, this.getElement());
-    this._element.addEventListener(`click`, onElementClick);
-    renderedFilmDetail = this;
-    document.addEventListener(`keydown`, onDocumentKeydown);
-  }
-
-  removeElement() {
-    removeElementInClass(this);
-    document.removeEventListener(`keydown`, onDocumentKeydown);
-  }
-
-  get closeButtonElement() {
-    return this._element.querySelector(SelectorElement.CLOSE_BUTTON);
+    super();
+    this._entity = entity;
+    this._createTemplateFunc = createFilmDetailTemplate;
   }
 }
 

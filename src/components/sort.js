@@ -1,4 +1,5 @@
-import {renderElement, removeElementInClass, getElementInClass, getTemplateInClass} from './utils.js';
+
+import Abstract from './abstract.js';
 
 const createSortTemplate = () => {
   return (
@@ -10,21 +11,10 @@ const createSortTemplate = () => {
   );
 };
 
-class Sort {
-  getTemplate() {
-    return getTemplateInClass(this, createSortTemplate);
-  }
-
-  getElement() {
-    return getElementInClass(this);
-  }
-
-  renderElement(parentElement) {
-    renderElement(parentElement, this.getElement(), `afterbegin`);
-  }
-
-  removeElement() {
-    removeElementInClass(this);
+class Sort extends Abstract {
+  constructor() {
+    super();
+    this._createTemplateFunc = createSortTemplate;
   }
 }
 

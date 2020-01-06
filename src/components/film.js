@@ -1,14 +1,7 @@
 import * as utils from './utils.js';
-import {FilmDetail} from './film-detail.js';
-import {renderedFilms} from '../main.js';
+import Abstract from './abstract.js';
 
 const DESCRIPTION_MAX_SYMBOLS = 140;
-
-const SelectorElement = {
-  POSTER: `.film-card__poster`,
-  TITLE: `.film-card__title`,
-  COMMENT_COUNT: `.film-card__comments`
-};
 
 const mockText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
@@ -81,8 +74,9 @@ const getActiveClass = (condition) => {
   return ``;
 };
 
-const getRandomFilmEntity = () => {
+const getRandomFilmEntity = (id) => {
   const entity = {
+    id,
     title: utils.getRandomArrayElements(mockWords, 5).join(` `),
     originalTitle: utils.getRandomArrayElements(mockWords, 5).join(` `),
     directorName: getPersonNames().toString(),
@@ -105,34 +99,23 @@ const getRandomFilmEntity = () => {
   return entity;
 };
 
-const onElementClick = function (evt) {
-  evt.preventDefault();
-  const element = evt.currentTarget;
-  const currentClass = renderedFilms.find((item) => {
-    return item.element === element;
-  });
-
-  if (evt.target === currentClass.posterElement || currentClass.titleElement || currentClass.commentCountElement) {
-    const filmDetail = new FilmDetail(currentClass.entity);
-    filmDetail.renderElement();
-  }
-};
 
 const createFilmTemplate = (entity) => {
-  const title = entity._title;
-  const posterName = entity._posterName;
-  const year = `${entity._releaseDate.getFullYear()}`;
-  const duration = getDuration(entity._duration);
-  const [genre] = entity._genres;
-  const commentCount = getCommentCount(entity._commentCount);
-  const description = entity._description.substr(0, DESCRIPTION_MAX_SYMBOLS);
-  const raiting = getRaiting(entity._raiting);
-  const isWatched = getActiveClass(entity._isWatched);
-  const isFavorite = getActiveClass(entity._isFavorite);
-  const isMarked = getActiveClass(entity._isMarked);
+  const id = entity.id;
+  const title = entity.title;
+  const posterName = entity.posterName;
+  const year = `${entity.releaseDate.getFullYear()}`;
+  const duration = getDuration(entity.duration);
+  const [genre] = entity.genres;
+  const commentCount = getCommentCount(entity.commentCount);
+  const description = entity.description.substr(0, DESCRIPTION_MAX_SYMBOLS);
+  const raiting = getRaiting(entity.raiting);
+  const isWatched = getActiveClass(entity.isWatched);
+  const isFavorite = getActiveClass(entity.isFavorite);
+  const isMarked = getActiveClass(entity.isMarked);
 
   return (
-    `<article class="film-card">
+    `<article class="film-card" data-id="${id}">
       <h3 class="film-card__title">${title}</h3>
       <p class="film-card__rating">${raiting}</p>
       <p class="film-card__info">
@@ -152,60 +135,11 @@ const createFilmTemplate = (entity) => {
   );
 };
 
-class Film {
+class Film extends Abstract {
   constructor(entity) {
+    super();
     this._entity = entity;
-    this._title = entity.title;
-    this._posterName = entity.posterName;
-    this._description = entity.description;
-    this._raiting = entity.raiting;
-    this._releaseDate = entity.releaseDate;
-    this._duration = entity.duration;
-    this._genres = entity.genres;
-    this._commentCount = entity.commentCount;
-    this._isWatched = entity.isWatched;
-    this._isFavorite = entity.isFavorite;
-    this._isMarked = entity.isMarked;
-  }
-
-  getTemplate() {
-    return utils.getTemplateInClass(this, createFilmTemplate);
-  }
-
-  getElement() {
-    return utils.getElementInClass(this);
-  }
-
-  renderElement(parentElement) {
-    utils.renderElement(parentElement, this.getElement());
-  }
-
-  removeElement() {
-    utils.removeElementInClass(this);
-  }
-
-  get entity() {
-    return this._entity;
-  }
-
-  get element() {
-    return this._element;
-  }
-
-  get posterElement() {
-    return this._element.querySelector(SelectorElement.POSTER);
-  }
-
-  get titleElement() {
-    return this._element.querySelector(SelectorElement.TITLE);
-  }
-
-  get commentCountElement() {
-    return this._element.querySelector(SelectorElement.COMMENT_COUNT);
-  }
-
-  addClickHandlerOnElement() {
-    this._element.addEventListener(`click`, onElementClick);
+    this._createTemplateFunc = createFilmTemplate;
   }
 }
 
