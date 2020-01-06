@@ -127,4 +127,4 @@ export const removeChildren = (parentElement) => {
   while (parentElement.children[0]) {
     parentElement.children[0].remove();
   }
-}
+};

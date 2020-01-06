@@ -13,14 +13,14 @@ class PageController {
   }
 
   render(filmEntites) {
-    let currentFilmDetail = null;
+    let currentFilmDetail;
     let newGeneralListConfig;
 
     const onFilmElementClick = (evt) => {
       evt.preventDefault();
       const element = evt.currentTarget;
       const currentEntity = filmEntites[element.dataset.id];
-      const classes = [ClassName.FILM_POSTER, ClassName.FILM_TITLE, ClassName.FILM_COMMENT_COUNT]
+      const classes = [ClassName.FILM_POSTER, ClassName.FILM_TITLE, ClassName.FILM_COMMENT_COUNT];
 
       const isTargetElement = evt.target.classList.contains(classes.find((item) => {
         return evt.target.classList.contains(item);
@@ -80,7 +80,7 @@ class PageController {
     const changeActiveSorter = (newElement) => {
       sort.getElement().querySelector(`.${ClassName.SORT_ACTIVE_BUTTON}`).classList.remove(ClassName.SORT_ACTIVE_BUTTON);
       newElement.classList.add(ClassName.SORT_ACTIVE_BUTTON);
-    }
+    };
 
     const renderFilms = (config, filmList, isResetFilmIndex = false) => {
       const entities = sortArrWithObjByKey(filmEntites, config.SORT_PROPERTY);
