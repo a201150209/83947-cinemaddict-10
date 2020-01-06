@@ -24,4 +24,4 @@ class Navigation extends Abstract {
   }
 }
 
-export {Navigation};
+export default Navigation;

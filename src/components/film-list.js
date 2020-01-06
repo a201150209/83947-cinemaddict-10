@@ -24,11 +24,14 @@ const createFilmListTemplate = (entity) => {
   );
 };
 
-const getEntitiesForRender = (entites, config) => {
+const getEntitiesForRender = (entites, config, isResetIndex) => {
   let count;
 
-  const isMaxLoad = currentFilmIndex[config.NAME] + config.Count.LOAD >= config.Count.MAX;
+  if (isResetIndex) {
+    currentFilmIndex[config.NAME] = 0;
+  }
 
+  const isMaxLoad = currentFilmIndex[config.NAME] + config.Count.LOAD >= config.Count.MAX;
   count = isMaxLoad ? config.Count.MAX - currentFilmIndex[config.NAME] : config.Count.LOAD;
 
   const start = currentFilmIndex[config.NAME];

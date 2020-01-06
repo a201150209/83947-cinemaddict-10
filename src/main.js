@@ -1,9 +1,7 @@
 
 import {Profile} from './components/profile.js';
-import {Navigation} from './components/navigation.js';
-import {Sort} from './components/sort.js';
+import Navigation from './components/navigation.js';
 import {getRandomFilmEntity} from './components/film.js';
-
 import PageController from './components/page-controller.js';
 
 const ClassName = {
@@ -14,7 +12,8 @@ const ClassName = {
   FILM_POSTER: `film-card__poster`,
   FILM_TITLE: `film-card__title`,
   FILM_COMMENT_COUNT: `film-card__comments`,
-  FILM_DETAIL_CLOSE_BUTTON: `film-details__close-btn`
+  FILM_DETAIL_CLOSE_BUTTON: `film-details__close-btn`,
+  SORT_ACTIVE_BUTTON: `sort__button--active`
 };
 
 const FilmListConfig = {
@@ -128,14 +127,12 @@ const contentElement = mainElement.querySelector(`.${ClassName.CONTENT}`);
 const statistic = getStatistic(filmEntites);
 const profile = new Profile(getRaiting(statistic.watched));
 profile.renderElement(headerElement);
-const sort = new Sort();
-sort.renderElement(mainElement, `afterbegin`);
-const navigation = new Navigation(statistic);
-navigation.renderElement(mainElement, `afterbegin`);
-
 
 const pageController = new PageController(contentElement);
 pageController.render(filmEntites);
+
+const navigation = new Navigation(statistic);
+navigation.renderElement(mainElement, `afterbegin`);
 
 
 const setFilmsCount = () => {
@@ -144,4 +141,4 @@ const setFilmsCount = () => {
 };
 setFilmsCount();
 
-export {FilmListConfig, ClassName};
+export {FilmListConfig, ClassName, mainElement};
