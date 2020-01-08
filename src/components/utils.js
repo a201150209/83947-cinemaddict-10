@@ -122,3 +122,9 @@ export const removeElementInClass = (currentClass) => {
   currentClass._element.remove();
   currentClass._element = null;
 };
+
+export const removeChildren = (parentElement) => {
+  while (parentElement.children[0]) {
+    parentElement.children[0].remove();
+  }
+};

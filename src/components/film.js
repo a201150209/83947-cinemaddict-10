@@ -99,7 +99,6 @@ const getRandomFilmEntity = (id) => {
   return entity;
 };
 
-
 const createFilmTemplate = (entity) => {
   const id = entity.id;
   const title = entity.title;
