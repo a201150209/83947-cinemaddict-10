@@ -1,8 +1,8 @@
 
-import {Profile} from './components/profile.js';
+import Profile from './components/profile.js';
 import Navigation from './components/navigation.js';
-import {getRandomFilmEntity} from './components/film.js';
-import PageController from './components/page-controller.js';
+import PageController from './controllers/page-controller.js';
+import {getRandomFilmEntity} from './mocks/film.js';
 
 const ClassName = {
   HEADER: `header`,
@@ -13,10 +13,17 @@ const ClassName = {
   FILM_TITLE: `film-card__title`,
   FILM_COMMENT_COUNT: `film-card__comments`,
   FILM_DETAIL_CLOSE_BUTTON: `film-details__close-btn`,
-  SORT_ACTIVE_BUTTON: `sort__button--active`
+  SORT_ACTIVE_BUTTON: `sort__button--active`,
+  ADD_TO_WATCHLIST_BUTTON_ON_FILM: `film-card__controls-item--add-to-watchlist`,
+  MARK_AS_WATCHED_BUTTON_ON_FILM: `film-card__controls-item--mark-as-watched`,
+  ADD_TO_FAVORITES_BUTTON_ON_FILM: `film-card__controls-item--favorite`,
+  ADD_TO_WATCHLIST_BUTTON_ON_FILM_DETAIL: `film-details__control-label--watchlist`,
+  MARK_AS_WATCHED_BUTTON_ON_FILM_DETAIL: `film-details__control-label--watched`,
+  ADD_TO_FAVORITES_BUTTON_ON_FILM_DETAIL: `film-details__control-label--favorite`,
+  ACTIVE_BUTTON_ON_FILM: `film-card__controls-item--active`
 };
 
-const FilmListConfig = {
+const filmListConfig = {
   General: {
     Count: {
       MAX: 15,
@@ -28,7 +35,8 @@ const FilmListConfig = {
       IS_TITLE_HIDDEN: true
     },
     NAME: `general`,
-    SORT_PROPERTY: `title`
+    sortProperty: `title`,
+    currentIndex: 0
   },
   TopRated: {
     Count: {
@@ -41,7 +49,8 @@ const FilmListConfig = {
       IS_TITLE_HIDDEN: false
     },
     NAME: `topRated`,
-    SORT_PROPERTY: `raiting`
+    SORT_PROPERTY: `raiting`,
+    currentIndex: 0,
   },
   MostCommented: {
     Count: {
@@ -54,7 +63,8 @@ const FilmListConfig = {
       IS_TITLE_HIDDEN: false
     },
     NAME: `mostCommented`,
-    SORT_PROPERTY: `commentCount`
+    SORT_PROPERTY: `commentCount`,
+    currentIndex: 0
   },
   NoData: {
     Template: {
@@ -62,8 +72,7 @@ const FilmListConfig = {
       TITLE: `There are no movies in our database`,
       IS_TITLE_HIDDEN: false
     },
-    NAME: `general`,
-    SORT_PROPERTY: `title`
+    NAME: `noData`,
   },
   Title: {
     SELECTOR: `.films-list__title`,
@@ -74,7 +83,7 @@ const FilmListConfig = {
   }
 };
 
-const filmEntites = new Array(FilmListConfig.General.Count.MAX).fill(``).map((item, i) => {
+const filmEntites = new Array(filmListConfig.General.Count.MAX).fill(``).map((item, i) => {
   return getRandomFilmEntity(i);
 });
 
@@ -134,11 +143,10 @@ pageController.render(filmEntites);
 const navigation = new Navigation(statistic);
 navigation.renderElement(mainElement, `afterbegin`);
 
-
 const setFilmsCount = () => {
   const element = document.querySelector(`.${ClassName.FILMS_COUNT}`);
   element.textContent = `${filmEntites.length} movies inside`;
 };
 setFilmsCount();
 
-export {FilmListConfig, ClassName, mainElement};
+export {filmListConfig, ClassName, mainElement, filmEntites};

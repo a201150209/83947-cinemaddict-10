@@ -28,6 +28,10 @@ class Abstract {
     this._element = null;
   }
 
+  removeLinkToElement() {
+    this._element = null;
+  }
+
   addClickHandlerOnElement(handler) {
     this._element.addEventListener(`click`, handler);
   }

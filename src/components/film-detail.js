@@ -1,4 +1,5 @@
 import {MonthNames, createTemplateFromCollection} from './utils.js';
+// import AbstractSmart from './abstract-smart.js';
 import Abstract from './abstract.js';
 
 const getGenreTemplate = (genre) => {
@@ -7,6 +8,57 @@ const getGenreTemplate = (genre) => {
 
 const getCheckedStatus = (condition) => {
   return condition ? `checked` : ``;
+};
+
+const getUserRaitingTemplate = (raiting) => {
+  return (
+    `<p class="film-details__user-rating">Your rate ${raiting}</p>`
+  );
+};
+
+const getRaitingTemplate = (value, isUserRaiting) => {
+  const isChecked = getCheckedStatus(isUserRaiting);
+
+  return (
+    `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${value}" id="rating-${value}" ${isChecked}>
+      <label class="film-details__user-rating-label" for="rating-${value}">${value}</label>`
+  )
+}
+
+const getRaitingBlockTemplate = (posterName, title, userRaiting) => {
+
+  const raitingTemplates = new Array(9).fill(``).map((item, i) => {
+    const value = i + 1;
+    return getRaitingTemplate(value, value === userRaiting)
+  }).join(`\n`);
+
+
+
+  return (
+    `<div class="form-details__middle-container">
+      <section class="film-details__user-rating-wrap">
+        <div class="film-details__user-rating-controls">
+          <button class="film-details__watched-reset" type="button">Undo</button>
+        </div>
+
+        <div class="film-details__user-score">
+          <div class="film-details__user-rating-poster">
+            <img src="./images/posters/${posterName}.jpg" alt="film-poster" class="film-details__user-rating-img">
+          </div>
+
+          <section class="film-details__user-rating-inner">
+            <h3 class="film-details__user-rating-title">${title}</h3>
+
+            <p class="film-details__user-rating-feelings">How you feel it?</p>
+
+            <div class="film-details__user-rating-score">
+              ${raitingTemplates}
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>`
+  )
 };
 
 const getCommentTemplate = (entity) => {
@@ -29,7 +81,6 @@ const getCommentTemplate = (entity) => {
   );
 };
 
-
 const createFilmDetailTemplate = (entity) => {
   const releaseDate = `${entity.releaseDate.getDate()} ${MonthNames[entity.releaseDate.getMonth()]} ${entity.releaseDate.getFullYear()}`;
   const writerNames = entity.writerNames.join(`, `);
@@ -49,6 +100,16 @@ const createFilmDetailTemplate = (entity) => {
   const countryName = entity.countryName;
   const description = entity.description;
   const commentCount = entity.commentCount;
+  const userRaiting = entity.userRaiting;
+  let raitingBlockTemplate = ``;
+  let userRaitingTemplate = ``;
+
+  if (isWatched) {
+    raitingBlockTemplate = getRaitingBlockTemplate(posterName, title, userRaiting);
+  }
+  if (userRaiting) {
+    userRaitingTemplate = getUserRaitingTemplate(userRaiting);
+  }
 
   return (
     `<section class="film-details">
@@ -73,6 +134,7 @@ const createFilmDetailTemplate = (entity) => {
 
                 <div class="film-details__rating">
                   <p class="film-details__total-rating">${raiting}</p>
+                  ${userRaitingTemplate}
                 </div>
               </div>
 
@@ -128,6 +190,8 @@ const createFilmDetailTemplate = (entity) => {
               favorites</label>
           </section>
         </div>
+
+        ${raitingBlockTemplate}
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
@@ -186,4 +250,4 @@ class FilmDetail extends Abstract {
   }
 }
 
-export {FilmDetail};
+export default FilmDetail;

@@ -18,4 +18,4 @@ class Sort extends Abstract {
   }
 }
 
-export {Sort};
+export default Sort;

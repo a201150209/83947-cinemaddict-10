@@ -13,4 +13,4 @@ class ShowMoreButton extends Abstract {
   }
 }
 
-export {ShowMoreButton};
+export default ShowMoreButton;
