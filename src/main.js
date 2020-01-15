@@ -20,7 +20,11 @@ const ClassName = {
   ADD_TO_WATCHLIST_BUTTON_ON_FILM_DETAIL: `film-details__control-label--watchlist`,
   MARK_AS_WATCHED_BUTTON_ON_FILM_DETAIL: `film-details__control-label--watched`,
   ADD_TO_FAVORITES_BUTTON_ON_FILM_DETAIL: `film-details__control-label--favorite`,
-  ACTIVE_BUTTON_ON_FILM: `film-card__controls-item--active`
+  ACTIVE_BUTTON_ON_FILM: `film-card__controls-item--active`,
+  RAITING_LABEL_ON_FILM_DETAIL: `film-details__user-rating-label`,
+  EMOJI_ON_FILM_DETAIL: `film-details__emoji-item`,
+  EMOJI_LABEL_ON_FILM_DETAIL: `film-details__emoji-label`,
+  EMOJI_CONTAINER_ON_FILM_DETAIL: `film-details__add-emoji-label`
 };
 
 const filmListConfig = {

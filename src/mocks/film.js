@@ -39,7 +39,7 @@ const getCommentEntities = (count) => {
 
 const getUserRaiting = (isWatched) => {
   return isWatched ? utils.getRandomNumber(0, 10) : null;
-}
+};
 
 const getRandomFilmEntity = (id) => {
   const entity = {

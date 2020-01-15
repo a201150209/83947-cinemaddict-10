@@ -1,6 +1,7 @@
 import {MonthNames, createTemplateFromCollection} from './utils.js';
-// import AbstractSmart from './abstract-smart.js';
 import Abstract from './abstract.js';
+
+const RAITING_COUNT = 9;
 
 const getGenreTemplate = (genre) => {
   return `<span class="film-details__genre">${genre}</span>`;
@@ -22,17 +23,15 @@ const getRaitingTemplate = (value, isUserRaiting) => {
   return (
     `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${value}" id="rating-${value}" ${isChecked}>
       <label class="film-details__user-rating-label" for="rating-${value}">${value}</label>`
-  )
-}
+  );
+};
 
 const getRaitingBlockTemplate = (posterName, title, userRaiting) => {
 
-  const raitingTemplates = new Array(9).fill(``).map((item, i) => {
+  const raitingTemplates = new Array(RAITING_COUNT).fill(``).map((item, i) => {
     const value = i + 1;
-    return getRaitingTemplate(value, value === userRaiting)
+    return getRaitingTemplate(value, value === userRaiting);
   }).join(`\n`);
-
-
 
   return (
     `<div class="form-details__middle-container">
@@ -58,7 +57,7 @@ const getRaitingBlockTemplate = (posterName, title, userRaiting) => {
         </div>
       </section>
     </div>`
-  )
+  );
 };
 
 const getCommentTemplate = (entity) => {
@@ -81,12 +80,17 @@ const getCommentTemplate = (entity) => {
   );
 };
 
+const getGenreTitle = (count) => {
+  return count > 1 ? `Genres` : `Genre`;
+};
+
 const createFilmDetailTemplate = (entity) => {
   const releaseDate = `${entity.releaseDate.getDate()} ${MonthNames[entity.releaseDate.getMonth()]} ${entity.releaseDate.getFullYear()}`;
   const writerNames = entity.writerNames.join(`, `);
   const actorNames = entity.actorNames.join(`, `);
   const duration = `${entity.duration.hour}h ${entity.duration.minut}m`;
   const genres = createTemplateFromCollection(entity.genres, getGenreTemplate);
+  const genreTitle = getGenreTitle(genres.length);
   const comments = createTemplateFromCollection(entity.comments, getCommentTemplate);
   const isWatched = getCheckedStatus(entity.isWatched);
   const isFavorite = getCheckedStatus(entity.isFavorite);
@@ -101,15 +105,8 @@ const createFilmDetailTemplate = (entity) => {
   const description = entity.description;
   const commentCount = entity.commentCount;
   const userRaiting = entity.userRaiting;
-  let raitingBlockTemplate = ``;
-  let userRaitingTemplate = ``;
-
-  if (isWatched) {
-    raitingBlockTemplate = getRaitingBlockTemplate(posterName, title, userRaiting);
-  }
-  if (userRaiting) {
-    userRaitingTemplate = getUserRaitingTemplate(userRaiting);
-  }
+  let raitingBlockTemplate = isWatched ? getRaitingBlockTemplate(posterName, title, userRaiting) : ``;
+  let userRaitingTemplate = isWatched && userRaiting ? getUserRaitingTemplate(userRaiting) : ``;
 
   return (
     `<section class="film-details">
@@ -164,7 +161,7 @@ const createFilmDetailTemplate = (entity) => {
                   <td class="film-details__cell">${countryName}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${genreTitle}</td>
                   <td class="film-details__cell">
                     ${genres}
                 </tr>

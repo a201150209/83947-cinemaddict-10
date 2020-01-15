@@ -128,3 +128,14 @@ export const removeChildren = (parentElement) => {
     parentElement.children[0].remove();
   }
 };
+
+export const getTrueKeyInObject = (object) => {
+  let targetKey;
+  for (let key in object) {
+    if (object.hasOwnProperty(key) && object[key]) {
+      targetKey = key;
+      break;
+    }
+  }
+  return targetKey;
+};

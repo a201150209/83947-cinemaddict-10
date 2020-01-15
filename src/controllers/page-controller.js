@@ -9,6 +9,11 @@ import {ClassName, filmListConfig, mainElement} from '../main.js';
 class PageController {
   constructor(container) {
     this._container = container;
+    this._filmControllers = [];
+    this._generalFilmList = null;
+    this._topRatedFilmList = null;
+    this._mostCommentedFilmList = null;
+    this._onViewChange = this._onViewChange.bind(this);
   }
 
   render(filmEntites) {
@@ -33,12 +38,13 @@ class PageController {
     };
 
     const getIsMaxFilms = (config) => {
-      return config.currentIndex >= config.Count.MAX ? true : false;
+      return config.currentIndex >= config.Count.MAX;
     };
 
     const onShowMoreButtonElementClick = (evt) => {
       evt.preventDefault();
-      renderFilmsInList(filmListConfig.General, generalFilmList);
+      renderFilms(filmListConfig.General, this._generalFilmList);
+      this._generalFilmList.hideEmptyElement();
       if (getIsMaxFilms(filmListConfig.General)) {
         showMoreButton.removeElement();
       }
@@ -48,12 +54,12 @@ class PageController {
       if (evt.target.dataset.type && !evt.target.classList.contains(ClassName.SORT_ACTIVE_BUTTON)) {
 
         filmListConfig.General.sortProperty = evt.target.dataset.type;
-        removeChildren(generalFilmList.getContainerElement());
-        renderFilms(filmListConfig.General, generalFilmList, true);
+        removeChildren(this._generalFilmList.getContainerElement());
+        renderFilms(filmListConfig.General, this._generalFilmList, true);
         changeActiveSorter(evt.target);
 
         if (!showMoreButton.element) {
-          showMoreButton.renderElement(generalFilmList.getElement());
+          showMoreButton.renderElement(this._generalFilmList.getElement());
           showMoreButton.addClickHandlerOnElement(onShowMoreButtonElementClick);
         }
       }
@@ -64,20 +70,22 @@ class PageController {
       newElement.classList.add(ClassName.SORT_ACTIVE_BUTTON);
     };
 
-
     const renderFilms = (config, filmList, isResetFilmIndex = false) => {
       const sortedEntities = sortArrWithObjByKey(filmEntites, config.sortProperty || config.SORT_PROPERTY);
       getEntitiesForRender(sortedEntities, config, isResetFilmIndex).forEach((item) => {
-        const controller = new FilmController(filmList.getContainerElement(), this._onDataChange);
+        const controller = new FilmController(filmList.getContainerElement(), this._onDataChange, this._onViewChange);
         controller.render(item);
+        this._filmControllers.push(controller);
       });
-    }
-
-    const renderFilmsInList = (config, filmList) => {
-      renderFilms(config, filmList);
-      filmList.hideEmptyElement();
     };
 
+    const renderFilmListAndFilms = (config) => {
+      const listName = `_` + config.NAME + `FilmList`;
+      this[listName] = new FilmList(config);
+      this[listName].renderElement(this._container);
+      renderFilms(config, this[listName]);
+      this[listName].hideEmptyElement();
+    };
 
     const sort = new Sort();
     sort.renderElement(mainElement, `afterbegin`);
@@ -88,37 +96,28 @@ class PageController {
       noDataFilmList.renderElement(this._container);
     }
 
-    const generalFilmList = new FilmList(filmListConfig.General);
-    generalFilmList.renderElement(this._container);
-    renderFilmsInList(filmListConfig.General, generalFilmList);
-
-    const topRatedFilmList = new FilmList(filmListConfig.TopRated);
-    topRatedFilmList.renderElement(this._container);
-    renderFilmsInList(filmListConfig.TopRated, topRatedFilmList);
-
-    const mostCommentedFilmList = new FilmList(filmListConfig.MostCommented);
-    mostCommentedFilmList.renderElement(this._container);
-    renderFilmsInList(filmListConfig.MostCommented, mostCommentedFilmList);
+    renderFilmListAndFilms(filmListConfig.General);
+    renderFilmListAndFilms(filmListConfig.TopRated);
+    renderFilmListAndFilms(filmListConfig.MostCommented);
 
     const showMoreButton = new ShowMoreButton();
-    showMoreButton.renderElement(generalFilmList.getElement());
+    showMoreButton.renderElement(this._generalFilmList.getElement());
     showMoreButton.addClickHandlerOnElement(onShowMoreButtonElementClick);
   }
 
   _onDataChange(className, handler) {
-    //debugger;
-    /*const oldElement = this[className].getElement();
-    this.render(this.entity);
-    oldElement.insertAdjacentElement(`beforebegin`, this[className]._element);
-    oldElement.remove();*/
-    //console.log(this[className]._entity.isMarked)
-
     const oldElement = this[className].getElement();
     const parent = oldElement.parentElement;
     this[className].removeLinkToElement();
     const newElement = this[className].getElement();
     parent.replaceChild(newElement, oldElement);
     this[className].addClickHandlerOnElement(handler);
+  }
+
+  _onViewChange() {
+    this._filmControllers.forEach((item) => {
+      item.setDefaultView();
+    });
   }
 
 }
