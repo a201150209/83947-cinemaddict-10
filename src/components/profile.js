@@ -18,4 +18,4 @@ class Profile extends Abstract {
   }
 }
 
-export {Profile};
+export default Profile;

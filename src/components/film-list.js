@@ -1,15 +1,8 @@
-import {FilmListConfig} from '../main.js';
+import {filmListConfig} from '../main.js';
 import Abstract from './abstract.js';
 
-
-const currentFilmIndex = {
-  general: 0,
-  topRated: 0,
-  mostCommented: 0
-};
-
 const getTitleHiddenClass = (isHidden) => {
-  return isHidden ? FilmListConfig.Title.HIDDEN_CLASS_NAME : ``;
+  return isHidden ? filmListConfig.Title.HIDDEN_CLASS_NAME : ``;
 };
 
 const createFilmListTemplate = (entity) => {
@@ -24,33 +17,6 @@ const createFilmListTemplate = (entity) => {
   );
 };
 
-const getEntitiesForRender = (entites, config, isResetIndex) => {
-  let count;
-
-  if (isResetIndex) {
-    currentFilmIndex[config.NAME] = 0;
-  }
-
-  const isMaxLoad = currentFilmIndex[config.NAME] + config.Count.LOAD >= config.Count.MAX;
-  count = isMaxLoad ? config.Count.MAX - currentFilmIndex[config.NAME] : config.Count.LOAD;
-
-  const start = currentFilmIndex[config.NAME];
-  const end = currentFilmIndex[config.NAME] + count;
-  const isSortProperty = entites[start] && entites[start][config.SORT_PROPERTY];
-
-  if (!isSortProperty) {
-    return [];
-  }
-
-  currentFilmIndex[config.NAME] += count;
-  return entites.slice(start, end);
-
-};
-
-const getIsMaxFilms = () => {
-  return currentFilmIndex.general >= FilmListConfig.General.Count.MAX ? true : false;
-};
-
 
 class FilmList extends Abstract {
   constructor(entity) {
@@ -61,7 +27,7 @@ class FilmList extends Abstract {
 
   getContainerElement() {
     if (!this._containerElement) {
-      this._containerElement = this._element.querySelector(FilmListConfig.Container.SELECTOR);
+      this._containerElement = this._element.querySelector(filmListConfig.Container.SELECTOR);
     }
     return this._containerElement;
   }
@@ -74,11 +40,11 @@ class FilmList extends Abstract {
 
   showNoData() {
     if (this.getContainerElement().children.length === 0) {
-      const titleElement = this._element.querySelector(FilmListConfig.Title.SELECTOR);
-      titleElement.textContent = FilmListConfig.General.Template.TITLE_NO_FILMS;
-      titleElement.classList.remove(FilmListConfig.Title.HIDDEN_CLASS_NAME);
+      const titleElement = this._element.querySelector(filmListConfig.Title.SELECTOR);
+      titleElement.textContent = filmListConfig.General.Template.TITLE_NO_FILMS;
+      titleElement.classList.remove(filmListConfig.Title.HIDDEN_CLASS_NAME);
     }
   }
 }
 
-export {FilmList, getEntitiesForRender, getIsMaxFilms};
+export default FilmList;
