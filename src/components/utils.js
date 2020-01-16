@@ -1,18 +1,3 @@
-export const MonthNames = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `Jule`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`
-];
-
 export const Keycode = {
   ESC: 27
 };

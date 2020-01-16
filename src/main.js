@@ -153,4 +153,5 @@ const setFilmsCount = () => {
 };
 setFilmsCount();
 
+
 export {filmListConfig, ClassName, mainElement, filmEntites};

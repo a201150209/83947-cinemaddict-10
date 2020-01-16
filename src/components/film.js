@@ -1,5 +1,6 @@
 import Abstract from './abstract.js';
 import {ClassName} from '../main.js';
+const moment = require(`moment`);
 
 const DESCRIPTION_MAX_SYMBOLS = 140;
 
@@ -30,11 +31,15 @@ const getActiveClass = (condition) => {
   return condition ? ClassName.ACTIVE_BUTTON_ON_FILM : ``;
 };
 
+const formatYear = (date) => {
+  return moment(date).format(`YYYY`);
+};
+
 const createFilmTemplate = (entity) => {
   const id = entity.id;
   const title = entity.title;
   const posterName = entity.posterName;
-  const year = `${entity.releaseDate.getFullYear()}`;
+  const year = formatYear(entity.releaseDate);
   const duration = getDuration(entity.duration);
   const [genre] = entity.genres;
   const commentCount = getCommentCount(entity.commentCount);
