@@ -1,5 +1,7 @@
+
 import {MonthNames, createTemplateFromCollection} from './utils.js';
 import Abstract from './abstract.js';
+const moment = require('moment');
 
 const RAITING_COUNT = 9;
 
@@ -84,8 +86,13 @@ const getGenreTitle = (count) => {
   return count > 1 ? `Genres` : `Genre`;
 };
 
+
+const formatDate = (date) => {
+  return moment(date).format(`DD MMMM YYYY`);
+}
+
 const createFilmDetailTemplate = (entity) => {
-  const releaseDate = `${entity.releaseDate.getDate()} ${MonthNames[entity.releaseDate.getMonth()]} ${entity.releaseDate.getFullYear()}`;
+  const releaseDate = formatDate(entity.releaseDate);
   const writerNames = entity.writerNames.join(`, `);
   const actorNames = entity.actorNames.join(`, `);
   const duration = `${entity.duration.hour}h ${entity.duration.minut}m`;
