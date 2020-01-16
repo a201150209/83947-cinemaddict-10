@@ -1,7 +1,7 @@
 
-import {MonthNames, createTemplateFromCollection} from './utils.js';
+import {createTemplateFromCollection} from './utils.js';
 import Abstract from './abstract.js';
-const moment = require('moment');
+const moment = require(`moment`);
 
 const RAITING_COUNT = 9;
 
@@ -86,10 +86,9 @@ const getGenreTitle = (count) => {
   return count > 1 ? `Genres` : `Genre`;
 };
 
-
 const formatDate = (date) => {
   return moment(date).format(`DD MMMM YYYY`);
-}
+};
 
 const createFilmDetailTemplate = (entity) => {
   const releaseDate = formatDate(entity.releaseDate);

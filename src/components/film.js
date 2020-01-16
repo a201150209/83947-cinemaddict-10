@@ -1,6 +1,6 @@
 import Abstract from './abstract.js';
 import {ClassName} from '../main.js';
-const moment = require('moment');
+const moment = require(`moment`);
 
 const DESCRIPTION_MAX_SYMBOLS = 140;
 
