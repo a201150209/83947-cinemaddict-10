@@ -153,4 +153,7 @@ const setFilmsCount = () => {
 };
 setFilmsCount();
 
+getRandomFilmEntity();
+
+
 export {filmListConfig, ClassName, mainElement, filmEntites};
