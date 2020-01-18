@@ -1,7 +1,8 @@
 
 import Profile from './components/profile.js';
-import Navigation from './components/navigation.js';
+import FilterController from './controllers/filter-controller.js';
 import PageController from './controllers/page-controller.js';
+import Films from './models/films.js';
 import {getRandomFilmEntity} from './mocks/film.js';
 
 const ClassName = {
@@ -24,7 +25,9 @@ const ClassName = {
   RAITING_LABEL_ON_FILM_DETAIL: `film-details__user-rating-label`,
   EMOJI_ON_FILM_DETAIL: `film-details__emoji-item`,
   EMOJI_LABEL_ON_FILM_DETAIL: `film-details__emoji-label`,
-  EMOJI_CONTAINER_ON_FILM_DETAIL: `film-details__add-emoji-label`
+  EMOJI_CONTAINER_ON_FILM_DETAIL: `film-details__add-emoji-label`,
+  ACTIVE_FILTER: `main-navigation__item--active`,
+  FILTER: `main-navigation__item`
 };
 
 const filmListConfig = {
@@ -141,11 +144,14 @@ const statistic = getStatistic(filmEntites);
 const profile = new Profile(getRaiting(statistic.watched));
 profile.renderElement(headerElement);
 
-const pageController = new PageController(contentElement);
-pageController.render(filmEntites);
+const films = new Films(filmEntites);
 
-const navigation = new Navigation(statistic);
-navigation.renderElement(mainElement, `afterbegin`);
+const filterController = new FilterController(mainElement, films);
+const pageController = new PageController(contentElement, films);
+
+
+pageController.render();
+filterController.render(statistic);
 
 const setFilmsCount = () => {
   const element = document.querySelector(`.${ClassName.FILMS_COUNT}`);

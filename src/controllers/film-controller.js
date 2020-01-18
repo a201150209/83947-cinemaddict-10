@@ -7,9 +7,8 @@ const EMOJI_WIDTH = 55;
 const EMOJI_HEIGHT = 55;
 
 class FilmController {
-  constructor(containerElement, onDataChange, onViewChange) {
+  constructor(containerElement, onViewChange) {
     this._containerElement = containerElement;
-    this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._film = null;
     this._filmDetail = null;
@@ -131,6 +130,15 @@ class FilmController {
     if (this._filmDetail) {
       this._filmDetail.removeElement();
     }
+  }
+
+  _onDataChange(className, handler) {
+    const oldElement = this[className].getElement();
+    const parent = oldElement.parentElement;
+    this[className].removeLinkToElement();
+    const newElement = this[className].getElement();
+    parent.replaceChild(newElement, oldElement);
+    this[className].addClickHandlerOnElement(handler);
   }
 
 }

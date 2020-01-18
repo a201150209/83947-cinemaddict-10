@@ -1,6 +1,6 @@
 import Abstract from './abstract.js';
 
-const createNavigationTemplate = (entity) => {
+const createFilterTemplate = (entity) => {
   const favorited = entity.favorited;
   const watched = entity.watched;
   const marked = entity.marked;
@@ -16,12 +16,12 @@ const createNavigationTemplate = (entity) => {
   );
 };
 
-class Navigation extends Abstract {
+class Filters extends Abstract {
   constructor(entity) {
     super();
     this._entity = entity;
-    this._createTemplateFunc = createNavigationTemplate;
+    this._createTemplateFunc = createFilterTemplate;
   }
 }
 
-export default Navigation;
+export default Filters;

@@ -7,8 +7,9 @@ import {ClassName, filmListConfig, mainElement} from '../main.js';
 
 
 class PageController {
-  constructor(container) {
+  constructor(container, films) {
     this._container = container;
+    this._films = films;
     this._filmControllers = [];
     this._generalFilmList = null;
     this._topRatedFilmList = null;
@@ -16,12 +17,8 @@ class PageController {
     this._onViewChange = this._onViewChange.bind(this);
   }
 
-  render(filmEntites) {
-    const getEntitiesForRender = (entites, config, isResetIndex) => {
-      if (isResetIndex) {
-        config.currentIndex = 0;
-      }
-
+  render() {
+    const getEntitiesForRender = (entites, config) => {
       const isMaxLoad = config.currentIndex + config.Count.LOAD >= config.Count.MAX;
       const count = isMaxLoad ? config.Count.MAX - config.currentIndex : config.Count.LOAD;
 
@@ -71,9 +68,13 @@ class PageController {
     };
 
     const renderFilms = (config, filmList, isResetFilmIndex = false) => {
-      const sortedEntities = sortArrWithObjByKey(filmEntites, config.sortProperty || config.SORT_PROPERTY);
-      getEntitiesForRender(sortedEntities, config, isResetFilmIndex).forEach((item) => {
-        const controller = new FilmController(filmList.getContainerElement(), this._onDataChange, this._onViewChange);
+      if (isResetFilmIndex) {
+        config.currentIndex = 0;
+      }
+
+      const sortedEntities = sortArrWithObjByKey(this._films.getEntities(), config.sortProperty || config.SORT_PROPERTY);
+      getEntitiesForRender(sortedEntities, config).forEach((item) => {
+        const controller = new FilmController(filmList.getContainerElement(), this._onViewChange);
         controller.render(item);
         this._filmControllers.push(controller);
       });
@@ -91,7 +92,7 @@ class PageController {
     sort.renderElement(mainElement, `afterbegin`);
     sort.addClickHandlerOnElement(onSortElementClick);
 
-    if (filmEntites.length === 0) {
+    if (this._films.getEntities().length === 0) {
       const noDataFilmList = new FilmList(filmListConfig.NoData);
       noDataFilmList.renderElement(this._container);
     }
@@ -105,20 +106,12 @@ class PageController {
     showMoreButton.addClickHandlerOnElement(onShowMoreButtonElementClick);
   }
 
-  _onDataChange(className, handler) {
-    const oldElement = this[className].getElement();
-    const parent = oldElement.parentElement;
-    this[className].removeLinkToElement();
-    const newElement = this[className].getElement();
-    parent.replaceChild(newElement, oldElement);
-    this[className].addClickHandlerOnElement(handler);
-  }
-
   _onViewChange() {
     this._filmControllers.forEach((item) => {
       item.setDefaultView();
     });
   }
+
 
 }
 
