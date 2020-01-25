@@ -1,109 +1,79 @@
 import FilmList from '../components/film-list.js';
-import Sort from '../components/sort.js';
+import SortController from './sort-controller.js';
+import FiltersController from './filter-controller.js';
 import FilmController from './film-controller.js';
-import ShowMoreButton from '../components/show-more-button.js';
-import {sortArrWithObjByKey, removeChildren} from '../components/utils.js';
-import {ClassName, filmListConfig, mainElement} from '../main.js';
+import ShowMoreButtonController from './show-more-button-controller.js';
+import {removeChildren} from '../components/utils.js';
+import {filmListConfig, mainElement} from '../main.js';
 
 
 class PageController {
   constructor(container, films) {
     this._container = container;
     this._films = films;
+    this._filtersController = null;
+    this._sortController = null;
     this._filmControllers = [];
+    this._showMoreButtonController = null;
     this._generalFilmList = null;
     this._topRatedFilmList = null;
     this._mostCommentedFilmList = null;
+    this._renderFilms = this._renderFilms.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
+    this._onSortChange = this._onSortChange.bind(this);
   }
 
-  render() {
-    const getEntitiesForRender = (entites, config) => {
-      const isMaxLoad = config.currentIndex + config.Count.LOAD >= config.Count.MAX;
-      const count = isMaxLoad ? config.Count.MAX - config.currentIndex : config.Count.LOAD;
-
-      const start = config.currentIndex;
-      const end = config.currentIndex + count;
-      const isSortProperty = entites[start] && entites[start][config.sortProperty || config.SORT_PROPERTY];
-
-      if (!isSortProperty) {
-        return [];
-      }
-
-      config.currentIndex += count;
-      return entites.slice(start, end);
-    };
-
-    const getIsMaxFilms = (config) => {
-      return config.currentIndex >= config.Count.MAX;
-    };
-
-    const onShowMoreButtonElementClick = (evt) => {
-      evt.preventDefault();
-      renderFilms(filmListConfig.General, this._generalFilmList);
-      this._generalFilmList.hideEmptyElement();
-      if (getIsMaxFilms(filmListConfig.General)) {
-        showMoreButton.removeElement();
-      }
-    };
-
-    const onSortElementClick = (evt) => {
-      if (evt.target.dataset.type && !evt.target.classList.contains(ClassName.SORT_ACTIVE_BUTTON)) {
-
-        filmListConfig.General.sortProperty = evt.target.dataset.type;
-        removeChildren(this._generalFilmList.getContainerElement());
-        renderFilms(filmListConfig.General, this._generalFilmList, true);
-        changeActiveSorter(evt.target);
-
-        if (!showMoreButton.element) {
-          showMoreButton.renderElement(this._generalFilmList.getElement());
-          showMoreButton.addClickHandlerOnElement(onShowMoreButtonElementClick);
-        }
-      }
-    };
-
-    const changeActiveSorter = (newElement) => {
-      sort.getElement().querySelector(`.${ClassName.SORT_ACTIVE_BUTTON}`).classList.remove(ClassName.SORT_ACTIVE_BUTTON);
-      newElement.classList.add(ClassName.SORT_ACTIVE_BUTTON);
-    };
-
-    const renderFilms = (config, filmList, isResetFilmIndex = false) => {
-      if (isResetFilmIndex) {
-        config.currentIndex = 0;
-      }
-
-      const sortedEntities = sortArrWithObjByKey(this._films.getEntities(), config.sortProperty || config.SORT_PROPERTY);
-      getEntitiesForRender(sortedEntities, config).forEach((item) => {
-        const controller = new FilmController(filmList.getContainerElement(), this._onViewChange);
-        controller.render(item);
-        this._filmControllers.push(controller);
-      });
-    };
-
-    const renderFilmListAndFilms = (config) => {
-      const listName = `_` + config.NAME + `FilmList`;
-      this[listName] = new FilmList(config);
-      this[listName].renderElement(this._container);
-      renderFilms(config, this[listName]);
-      this[listName].hideEmptyElement();
-    };
-
-    const sort = new Sort();
-    sort.renderElement(mainElement, `afterbegin`);
-    sort.addClickHandlerOnElement(onSortElementClick);
-
+  render(statistic) {
     if (this._films.getEntities().length === 0) {
       const noDataFilmList = new FilmList(filmListConfig.NoData);
       noDataFilmList.renderElement(this._container);
     }
 
-    renderFilmListAndFilms(filmListConfig.General);
-    renderFilmListAndFilms(filmListConfig.TopRated);
-    renderFilmListAndFilms(filmListConfig.MostCommented);
+    this._renderFilmListAndFilms(filmListConfig.General);
+    this._renderFilmListAndFilms(filmListConfig.TopRated);
+    this._renderFilmListAndFilms(filmListConfig.MostCommented);
 
-    const showMoreButton = new ShowMoreButton();
-    showMoreButton.renderElement(this._generalFilmList.getElement());
-    showMoreButton.addClickHandlerOnElement(onShowMoreButtonElementClick);
+    this._sortController = new SortController(mainElement, this._films, this._onSortChange);
+    this._sortController.render();
+
+    this._filtersController = new FiltersController(mainElement, this._films, this._onFilterChange);
+    this._filtersController.render(statistic);
+
+    this._showMoreButtonController = new ShowMoreButtonController(this._generalFilmList, this._renderFilms);
+    this._showMoreButtonController.render();
+  }
+
+  _getEntitiesForRender(entites, config) {
+    const isMaxLoad = config.currentIndex + config.Count.LOAD >= config.Count.MAX;
+    const count = isMaxLoad ? config.Count.MAX - config.currentIndex : config.Count.LOAD;
+
+    const start = config.currentIndex;
+    const end = config.currentIndex + count;
+    config.currentIndex += count;
+
+    return entites.slice(start, end);
+  }
+
+  _renderFilmListAndFilms(config) {
+    const listName = `_` + config.NAME + `FilmList`;
+    this[listName] = new FilmList(config);
+    this[listName].renderElement(this._container);
+    this._renderFilms(config, this[listName]);
+    this[listName].hideEmptyElement();
+  };
+
+  _renderFilms(config, filmList) {
+    const entities = this._films.getEntities();
+    this._getEntitiesForRender(entities, config).forEach((item) => {
+      const controller = new FilmController(filmList.getContainerElement(), this._onViewChange);
+      controller.render(item);
+      this._filmControllers.push(controller);
+    });
+  }
+
+  _resetFilmIndex(config) {
+    config.currentIndex = 0;
   }
 
   _onViewChange() {
@@ -112,6 +82,23 @@ class PageController {
     });
   }
 
+  _rerenderPage() {
+    removeChildren(this._generalFilmList.getContainerElement());
+    this._showMoreButtonController.getButton().removeElement();
+    this._resetFilmIndex(filmListConfig.General);
+    this._renderFilms(filmListConfig.General, this._generalFilmList);
+    this._showMoreButtonController.renderButton();
+  }
+
+  _onFilterChange() {
+    this._rerenderPage();
+    this._filtersController.changeActiveElement();
+  }
+
+  _onSortChange() {
+    this._rerenderPage();
+    this._sortController.changeActiveElement();
+  }
 
 }
 

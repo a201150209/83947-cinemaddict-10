@@ -1,6 +1,5 @@
 
 import Profile from './components/profile.js';
-import FilterController from './controllers/filter-controller.js';
 import PageController from './controllers/page-controller.js';
 import Films from './models/films.js';
 import {getRandomFilmEntity} from './mocks/film.js';
@@ -34,7 +33,8 @@ const filmListConfig = {
   General: {
     Count: {
       MAX: 15,
-      LOAD: 5
+      LOAD: 5,
+      filtered: null
     },
     Template: {
       CLASS_MODIFICATOR: ``,
@@ -42,7 +42,7 @@ const filmListConfig = {
       IS_TITLE_HIDDEN: true
     },
     NAME: `general`,
-    sortProperty: `title`,
+    sortProperty: `default`,
     currentIndex: 0
   },
   TopRated: {
@@ -145,13 +145,9 @@ const profile = new Profile(getRaiting(statistic.watched));
 profile.renderElement(headerElement);
 
 const films = new Films(filmEntites);
-
-const filterController = new FilterController(mainElement, films);
 const pageController = new PageController(contentElement, films);
+pageController.render(statistic);
 
-
-pageController.render();
-filterController.render(statistic);
 
 const setFilmsCount = () => {
   const element = document.querySelector(`.${ClassName.FILMS_COUNT}`);
