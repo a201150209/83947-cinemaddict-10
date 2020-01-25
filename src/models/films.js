@@ -17,14 +17,18 @@ class Films {
     this._changedEntities = null;
     this._activeFilter = DEFAULT_FILTER_PROPERTY;
     this._activeSort = DEFAULT_SORT_PROPERTY;
+    this._updateFilters = null;
+    this._updateFilms = null;
+    this.onStatisticDataChange = this.onStatisticDataChange.bind(this);
+
+  }
+
+  setViewUpdater(name, func) {
+    this[name] = func;
   }
 
   getEntities() {
     return this._changedEntities || this._entities;
-  }
-
-  setEntities(entities) {
-    this._entities = entities;
   }
 
   activateFilter(filter) {
@@ -61,6 +65,36 @@ class Films {
     }
 
     this._activeSort = config.sortProperty;
+  }
+
+  onStatisticDataChange(id, property, newValue) {
+    const entity = this._entities[id];
+    entity[property] = newValue;
+    this._updateFilters();
+  }
+
+  getStatistic() {
+    const statistic = {
+      favorited: 0,
+      watched: 0,
+      marked: 0
+    };
+
+    this._entities.forEach((item) => {
+      if (item.isFavorite) {
+        statistic.favorited++;
+      }
+
+      if (item.isWatched) {
+        statistic.watched++;
+      }
+
+      if (item.isMarked) {
+        statistic.marked++;
+      }
+    });
+
+    return statistic;
   }
 }
 

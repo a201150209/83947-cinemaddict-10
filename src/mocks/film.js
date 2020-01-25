@@ -28,8 +28,8 @@ const getPersonNames = (count = 1) => {
 const getCommentEntities = (count) => {
   const comments = new Array(count).fill(``).map(() => {
     return {
-      icon: utils.getRandomArrayElements(commentIconNames).toString(),
-      text: utils.getRandomArrayElements(mockSentences, 2).join(` `),
+      emotion: utils.getRandomArrayElements(commentIconNames).toString(),
+      comment: utils.getRandomArrayElements(mockSentences, 2).join(` `),
       author: getPersonNames().toString(),
       date: utils.getRandomDate(-15, 0)
     };

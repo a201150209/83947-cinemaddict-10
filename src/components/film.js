@@ -35,6 +35,15 @@ const formatYear = (date) => {
   return moment(date).format(`YYYY`);
 };
 
+const getDescription = (description) => {
+  let сropDescription = description;
+  if (description.length >= DESCRIPTION_MAX_SYMBOLS) {
+    сropDescription = description.substr(0, DESCRIPTION_MAX_SYMBOLS - 1) + `...`
+  }
+
+  return сropDescription;
+}
+
 const createFilmTemplate = (entity) => {
   const id = entity.id;
   const title = entity.title;
@@ -43,7 +52,7 @@ const createFilmTemplate = (entity) => {
   const duration = getDuration(entity.duration);
   const [genre] = entity.genres;
   const commentCount = getCommentCount(entity.commentCount);
-  const description = entity.description.substr(0, DESCRIPTION_MAX_SYMBOLS);
+  const description = getDescription(entity.description);
   const raiting = getRaiting(entity.raiting);
   const isWatched = getActiveClass(entity.isWatched);
   const isFavorite = getActiveClass(entity.isFavorite);

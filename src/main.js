@@ -22,9 +22,11 @@ const ClassName = {
   ADD_TO_FAVORITES_BUTTON_ON_FILM_DETAIL: `film-details__control-label--favorite`,
   ACTIVE_BUTTON_ON_FILM: `film-card__controls-item--active`,
   RAITING_LABEL_ON_FILM_DETAIL: `film-details__user-rating-label`,
+  EMOJI_LIST_ON_FILM_DETAIL: `film-details__emoji-list`,
   EMOJI_ON_FILM_DETAIL: `film-details__emoji-item`,
   EMOJI_LABEL_ON_FILM_DETAIL: `film-details__emoji-label`,
   EMOJI_CONTAINER_ON_FILM_DETAIL: `film-details__add-emoji-label`,
+  COMMENT_FIELD_ON_FILM_DETAIL: `film-details__comment-input`,
   ACTIVE_FILTER: `main-navigation__item--active`,
   FILTER: `main-navigation__item`
 };
@@ -94,29 +96,6 @@ const filmEntites = new Array(filmListConfig.General.Count.MAX).fill(``).map((it
   return getRandomFilmEntity(i);
 });
 
-const getStatistic = (entites) => {
-  const statistic = {
-    favorited: 0,
-    watched: 0,
-    marked: 0
-  };
-
-  entites.forEach((item) => {
-    if (item.isFavorite) {
-      statistic.favorited++;
-    }
-
-    if (item.isWatched) {
-      statistic.watched++;
-    }
-
-    if (item.isMarked) {
-      statistic.marked++;
-    }
-  });
-
-  return statistic;
-};
 
 const getRaiting = (filmsCount) => {
   const raitingMap = new Map(Object.entries({
@@ -140,11 +119,11 @@ const headerElement = document.querySelector(`.${ClassName.HEADER}`);
 const mainElement = document.querySelector(`.${ClassName.MAIN}`);
 const contentElement = mainElement.querySelector(`.${ClassName.CONTENT}`);
 
-const statistic = getStatistic(filmEntites);
+const films = new Films(filmEntites);
+const statistic = films.getStatistic();
 const profile = new Profile(getRaiting(statistic.watched));
 profile.renderElement(headerElement);
 
-const films = new Films(filmEntites);
 const pageController = new PageController(contentElement, films);
 pageController.render(statistic);
 

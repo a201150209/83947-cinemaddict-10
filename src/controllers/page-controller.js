@@ -22,6 +22,7 @@ class PageController {
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onSortChange = this._onSortChange.bind(this);
+    this._onStatisticDataChange = this._films.onStatisticDataChange;
   }
 
   render(statistic) {
@@ -39,6 +40,7 @@ class PageController {
 
     this._filtersController = new FiltersController(mainElement, this._films, this._onFilterChange);
     this._filtersController.render(statistic);
+    this._films.setViewUpdater(`_updateFilters`, this._filtersController.rerender)
 
     this._showMoreButtonController = new ShowMoreButtonController(this._generalFilmList, this._renderFilms);
     this._showMoreButtonController.render();
@@ -61,13 +63,13 @@ class PageController {
     this[listName].renderElement(this._container);
     this._renderFilms(config, this[listName]);
     this[listName].hideEmptyElement();
-  };
+  }
 
   _renderFilms(config, filmList) {
     const entities = this._films.getEntities();
     this._getEntitiesForRender(entities, config).forEach((item) => {
-      const controller = new FilmController(filmList.getContainerElement(), this._onViewChange);
-      controller.render(item);
+      const controller = new FilmController(this._onViewChange, this._onStatisticDataChange);
+      controller.render(item, filmList.getContainerElement());
       this._filmControllers.push(controller);
     });
   }
@@ -82,21 +84,21 @@ class PageController {
     });
   }
 
-  _rerenderPage() {
+  _rerender() {
     removeChildren(this._generalFilmList.getContainerElement());
     this._showMoreButtonController.getButton().removeElement();
     this._resetFilmIndex(filmListConfig.General);
     this._renderFilms(filmListConfig.General, this._generalFilmList);
-    this._showMoreButtonController.renderButton();
+    this._showMoreButtonController.renderElement();
   }
 
   _onFilterChange() {
-    this._rerenderPage();
+    this._rerender();
     this._filtersController.changeActiveElement();
   }
 
   _onSortChange() {
-    this._rerenderPage();
+    this._rerender();
     this._sortController.changeActiveElement();
   }
 

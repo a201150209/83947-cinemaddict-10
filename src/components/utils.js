@@ -1,5 +1,6 @@
 export const Keycode = {
-  ESC: 27
+  ESC: 27,
+  ENTER: 13
 };
 
 export const getRandomNumber = (min, max, float = 0) => {

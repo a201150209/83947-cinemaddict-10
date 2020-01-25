@@ -12,12 +12,18 @@ class FiltersController {
     this._activeElement = null;
     this._onFilterChange = onFilterChange;
     this._onFiltersElementClick = this._onFiltersElementClick.bind(this);
+    this.rerender = this.rerender.bind(this);
   }
 
   render(statistic) {
     this._filters = new Filters(statistic);
-    this._filters.renderElement(this._container, `afterbegin`);
-    this._filters.addClickHandlerOnElement(this._onFiltersElementClick);
+    this._renderElement();
+  }
+
+  rerender() {
+    this._filters.setEntity(this._films.getStatistic());
+    this._filters.removeElement();
+    this._renderElement();
   }
 
   changeActiveElement() {
@@ -40,6 +46,13 @@ class FiltersController {
     const symbol = element.href.indexOf(TARGET_SYMBOL_IN_HREF, 0);
     const clickedFilter = element.href.slice(symbol + SHIFT_IN_HREF);
     return clickedFilter;
+  }
+
+  _renderElement() {
+    if (!this._filters.checkFiltersElement()) {
+      this._filters.renderElement(this._container, `afterbegin`);
+      this._filters.addClickHandlerOnElement(this._onFiltersElementClick);
+    }
   }
 }
 

@@ -22,6 +22,14 @@ class Filters extends Abstract {
     this._entity = entity;
     this._createTemplateFunc = createFilterTemplate;
   }
+
+  setEntity(entity) {
+    this._entity = entity;
+  }
+
+  checkFiltersElement() {
+    return this._element;
+  }
 }
 
 export default Filters;

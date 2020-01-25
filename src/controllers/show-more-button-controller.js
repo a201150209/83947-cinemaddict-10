@@ -11,12 +11,10 @@ class ShowMoreButtonController {
 
   render() {
     this._button = new ShowMoreButton();
-    this.renderButton();
+    this.renderElement();
   }
 
-  renderButton() {
-
-    console.log(filmListConfig.General)
+  renderElement() {
     if (!this._checkIsMaxFilms(filmListConfig.General)) {
       this._button.renderElement(this._filmList.getElement());
       this._button.addClickHandlerOnElement(this._onShowMoreButtonElementClick);

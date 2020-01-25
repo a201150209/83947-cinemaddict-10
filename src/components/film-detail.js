@@ -68,10 +68,10 @@ const getCommentTemplate = (entity) => {
   return (
     `<li class= "film-details__comment">
       <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${entity.icon}.png" width="55" height="55" alt="emoji">
+        <img src="./images/emoji/${entity.emotion}.png" width="55" height="55" alt="emoji">
       </span>
       <div>
-        <p class="film-details__comment-text">${entity.text}</p>
+        <p class="film-details__comment-text">${entity.comment}</p>
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${entity.author}</span>
           <span class="film-details__comment-day">${date}</span>
