@@ -22,7 +22,7 @@ class PageController {
     this._onViewChange = this._onViewChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
     this._onSortChange = this._onSortChange.bind(this);
-    this._onStatisticDataChange = this._films.onStatisticDataChange;
+    this._onDataChange = this._films.onDataChange;
   }
 
   render(statistic) {
@@ -40,7 +40,7 @@ class PageController {
 
     this._filtersController = new FiltersController(mainElement, this._films, this._onFilterChange);
     this._filtersController.render(statistic);
-    this._films.setViewUpdater(`_updateFilters`, this._filtersController.rerender)
+    this._films.setViewUpdater(`_updateFilters`, this._filtersController.rerender);
 
     this._showMoreButtonController = new ShowMoreButtonController(this._generalFilmList, this._renderFilms);
     this._showMoreButtonController.render();
@@ -68,7 +68,7 @@ class PageController {
   _renderFilms(config, filmList) {
     const entities = this._films.getEntities();
     this._getEntitiesForRender(entities, config).forEach((item) => {
-      const controller = new FilmController(this._onViewChange, this._onStatisticDataChange);
+      const controller = new FilmController(this._onViewChange, this._onDataChange);
       controller.render(item, filmList.getContainerElement());
       this._filmControllers.push(controller);
     });

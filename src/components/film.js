@@ -38,11 +38,11 @@ const formatYear = (date) => {
 const getDescription = (description) => {
   let сropDescription = description;
   if (description.length >= DESCRIPTION_MAX_SYMBOLS) {
-    сropDescription = description.substr(0, DESCRIPTION_MAX_SYMBOLS - 1) + `...`
+    сropDescription = description.substr(0, DESCRIPTION_MAX_SYMBOLS - 1) + `...`;
   }
 
   return сropDescription;
-}
+};
 
 const createFilmTemplate = (entity) => {
   const id = entity.id;
@@ -51,7 +51,7 @@ const createFilmTemplate = (entity) => {
   const year = formatYear(entity.releaseDate);
   const duration = getDuration(entity.duration);
   const [genre] = entity.genres;
-  const commentCount = getCommentCount(entity.commentCount);
+  const comments = getCommentCount(entity.comments.length);
   const description = getDescription(entity.description);
   const raiting = getRaiting(entity.raiting);
   const isWatched = getActiveClass(entity.isWatched);
@@ -69,7 +69,7 @@ const createFilmTemplate = (entity) => {
       </p>
       <img src="./images/posters/${posterName}.jpg" alt="" class="film-card__poster">
       <p class="film-card__description">${description}</p>
-      <a class="film-card__comments">${commentCount}</a>
+      <a class="film-card__comments">${comments}</a>
       <form class="film-card__controls">
         <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${isMarked}">Add to watchlist</button>
         <button class="film-card__controls-item button film-card__controls-item--mark-as-watched  ${isWatched}">Mark as watched</button>

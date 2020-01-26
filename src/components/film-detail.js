@@ -63,10 +63,10 @@ const getRaitingBlockTemplate = (posterName, title, userRaiting) => {
 };
 
 const getCommentTemplate = (entity) => {
-  const date = `${entity.date.getFullYear()}/${entity.date.getMonth() + 1}/${entity.date.getDate()}`;
+  const date = formatDateAndTime(entity.date);
 
   return (
-    `<li class= "film-details__comment">
+    `<li class= "film-details__comment" data-id="${entity.id}">
       <span class="film-details__comment-emoji">
         <img src="./images/emoji/${entity.emotion}.png" width="55" height="55" alt="emoji">
       </span>
@@ -75,7 +75,7 @@ const getCommentTemplate = (entity) => {
         <p class="film-details__comment-info">
           <span class="film-details__comment-author">${entity.author}</span>
           <span class="film-details__comment-day">${date}</span>
-          <button class="film-details__comment-delete">Delete</button>
+          <button class="film-details__comment-delete" data-id="${entity.id}">Delete</button>
         </p>
       </div>
     </li>`
@@ -88,6 +88,10 @@ const getGenreTitle = (count) => {
 
 const formatDate = (date) => {
   return moment(date).format(`DD MMMM YYYY`);
+};
+
+const formatDateAndTime = (date) => {
+  return moment(date).format(`YYYY/MM/DD hh:mm `);
 };
 
 const createFilmDetailTemplate = (entity) => {
@@ -109,7 +113,7 @@ const createFilmDetailTemplate = (entity) => {
   const directorName = entity.directorName;
   const countryName = entity.countryName;
   const description = entity.description;
-  const commentCount = entity.commentCount;
+  const commentCount = entity.comments.length;
   const userRaiting = entity.userRaiting;
   let raitingBlockTemplate = isWatched ? getRaitingBlockTemplate(posterName, title, userRaiting) : ``;
   let userRaitingTemplate = isWatched && userRaiting ? getUserRaitingTemplate(userRaiting) : ``;
@@ -214,25 +218,25 @@ const createFilmDetailTemplate = (entity) => {
 
               <div class="film-details__emoji-list">
                 <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile"
-                  value="sleeping">
+                  value="smile">
                 <label class="film-details__emoji-label" for="emoji-smile">
                   <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
                 </label>
 
                 <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio"
-                  id="emoji-sleeping" value="neutral-face">
+                  id="emoji-sleeping" value="sleeping">
                 <label class="film-details__emoji-label" for="emoji-sleeping">
                   <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
                 </label>
 
                 <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke"
-                  value="grinning">
+                  value="puke">
                 <label class="film-details__emoji-label" for="emoji-gpuke">
                   <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
                 </label>
 
                 <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry"
-                  value="grinning">
+                  value="angry">
                 <label class="film-details__emoji-label" for="emoji-angry">
                   <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
                 </label>

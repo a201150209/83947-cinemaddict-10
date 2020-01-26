@@ -1,5 +1,6 @@
 import Film from '../components/film.js';
 import FilmDetail from '../components/film-detail.js';
+import he from 'he';
 import {ClassName} from '../main.js';
 import {Keycode, getTrueKeyInObject, removeChildren} from '../components/utils.js';
 
@@ -43,7 +44,7 @@ class FilmController {
   _onFilmElementClick(evt) {
     evt.preventDefault();
     this._openFilmDetail(evt.target);
-    this._changeDataInFilmElement(evt.target);
+    this._changeControlsInFilmElement(evt.target);
   }
 
   _onFilmDetailElementClick(evt) {
@@ -51,6 +52,7 @@ class FilmController {
     this._changeControlsInDetailFilmElement(evt.target);
     this._changeRaiting(evt.target);
     this._selectEmoji(evt.target);
+    this._removeComment(evt.target);
   }
 
   _rerender(className, handler) {
@@ -95,7 +97,7 @@ class FilmController {
     }
   }
 
-  _changeDataInFilmElement(element) {
+  _changeControlsInFilmElement(element) {
     const property = {
       isWatched: element.classList.contains(ClassName.MARK_AS_WATCHED_BUTTON_ON_FILM),
       isMarked: element.classList.contains(ClassName.ADD_TO_WATCHLIST_BUTTON_ON_FILM),
@@ -103,7 +105,7 @@ class FilmController {
     };
     const changedProperty = getTrueKeyInObject(property);
     const isActive = element.classList.contains(ClassName.ACTIVE_BUTTON_ON_FILM);
-    this._changeData(changedProperty, isActive, false);
+    this._changeData(changedProperty, !isActive, false);
   }
 
   _changeControlsInDetailFilmElement(element) {
@@ -114,16 +116,20 @@ class FilmController {
     };
     const changedProperty = getTrueKeyInObject(property);
     const isActive = element.previousElementSibling && element.previousElementSibling.checked;
-    this._changeData(changedProperty, isActive, true);
+    this._changeData(changedProperty, !isActive, true);
   }
 
-  _changeData(property, isActive, isFilmDetail) {
+  _rerenderElements(isFilmDetail) {
+    this._rerender(`_film`, this._onFilmElementClick);
+    if (isFilmDetail) {
+      this._rerender(`_filmDetail`, this._onFilmDetailElementClick);
+    }
+  }
+
+  _changeData(property, newValue, isFilmDetail) {
     if (property) {
-      this._onDataChange(this._entity.id, property, !isActive);
-      this._rerender(`_film`, this._onFilmElementClick);
-      if (isFilmDetail) {
-        this._rerender(`_filmDetail`, this._onFilmDetailElementClick);
-      }
+      this._onDataChange(this._entity, property, newValue);
+      this._rerenderElements(isFilmDetail);
     }
   }
 
@@ -153,8 +159,11 @@ class FilmController {
     const commentFieldElement = this._filmDetail.getElement().querySelector(`.${ClassName.COMMENT_FIELD_ON_FILM_DETAIL}`);
 
     const valide = this._validateComment(emojiListElement, commentFieldElement);
-    const commentData = valide ? this._getCommentData(emojiListElement, commentFieldElement) : null
-    console.log(commentData)
+    if (valide) {
+      const data = this._getCommentData(emojiListElement, commentFieldElement);
+      this._saveCommentData(data);
+      this._rerenderElements(true);
+    }
   }
 
   _validateComment(emojiListElement, commentFieldElement) {
@@ -166,12 +175,24 @@ class FilmController {
 
   _getCommentData(emojiListElement, commentFieldElement) {
     return {
+      id: this._entity.comments.length + 1,
       emotion: emojiListElement.querySelector(`input:checked`).value,
-      comment: commentFieldElement.value,
+      comment: he.encode(commentFieldElement.value),
       date: new Date().toISOString(),
-    }
+    };
   }
 
+  _saveCommentData(data) {
+    this._entity.comments.push(data);
+  }
+
+  _removeComment(element) {
+    if (element.classList.contains(ClassName.REMOVE_COMMENT_BUTTON_ON_FILM_DETAIL)) {
+      const id = element.dataset.id;
+      this._entity.comments.splice(id, 1);
+      this._rerenderElements(true);
+    }
+  }
 }
 
 export default FilmController;

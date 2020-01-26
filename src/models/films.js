@@ -19,7 +19,7 @@ class Films {
     this._activeSort = DEFAULT_SORT_PROPERTY;
     this._updateFilters = null;
     this._updateFilms = null;
-    this.onStatisticDataChange = this.onStatisticDataChange.bind(this);
+    this.onDataChange = this.onDataChange.bind(this);
 
   }
 
@@ -37,7 +37,7 @@ class Films {
 
     if (this._activeFilter !== DEFAULT_FILTER_PROPERTY) {
       entities = this._entities.slice();
-      entities = sortArrWithObjByKey(entities, this._activeSort)
+      entities = sortArrWithObjByKey(entities, this._activeSort);
     } else {
       entities = this.getEntities();
     }
@@ -67,8 +67,7 @@ class Films {
     this._activeSort = config.sortProperty;
   }
 
-  onStatisticDataChange(id, property, newValue) {
-    const entity = this._entities[id];
+  onDataChange(entity, property, newValue) {
     entity[property] = newValue;
     this._updateFilters();
   }

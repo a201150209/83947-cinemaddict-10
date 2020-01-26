@@ -32,11 +32,11 @@ class ShowMoreButtonController {
     if (this._checkIsMaxFilms(filmListConfig.General)) {
       this._button.removeElement();
     }
-  };
+  }
 
   _checkIsMaxFilms(config) {
     return config.Count.filtered ? config.currentIndex >= config.Count.filtered : config.currentIndex >= config.Count.MAX;
-  };
+  }
 
 }
 
