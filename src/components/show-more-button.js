@@ -11,6 +11,10 @@ class ShowMoreButton extends Abstract {
     super();
     this._createTemplateFunc = createShowMoreButtonTemplate;
   }
+
+  checkButtonElement() {
+    return this._element;
+  }
 }
 
 export default ShowMoreButton;

@@ -1,7 +1,7 @@
 
 import Profile from './components/profile.js';
-import Navigation from './components/navigation.js';
 import PageController from './controllers/page-controller.js';
+import Films from './models/films.js';
 import {getRandomFilmEntity} from './mocks/film.js';
 
 const ClassName = {
@@ -22,16 +22,23 @@ const ClassName = {
   ADD_TO_FAVORITES_BUTTON_ON_FILM_DETAIL: `film-details__control-label--favorite`,
   ACTIVE_BUTTON_ON_FILM: `film-card__controls-item--active`,
   RAITING_LABEL_ON_FILM_DETAIL: `film-details__user-rating-label`,
+  COMMENT_ON_FILM_DETAIL: `film-details__comment`,
+  EMOJI_LIST_ON_FILM_DETAIL: `film-details__emoji-list`,
   EMOJI_ON_FILM_DETAIL: `film-details__emoji-item`,
   EMOJI_LABEL_ON_FILM_DETAIL: `film-details__emoji-label`,
-  EMOJI_CONTAINER_ON_FILM_DETAIL: `film-details__add-emoji-label`
+  EMOJI_CONTAINER_ON_FILM_DETAIL: `film-details__add-emoji-label`,
+  COMMENT_FIELD_ON_FILM_DETAIL: `film-details__comment-input`,
+  REMOVE_COMMENT_BUTTON_ON_FILM_DETAIL: `film-details__comment-delete`,
+  ACTIVE_FILTER: `main-navigation__item--active`,
+  FILTER: `main-navigation__item`
 };
 
 const filmListConfig = {
   General: {
     Count: {
       MAX: 15,
-      LOAD: 5
+      LOAD: 5,
+      filtered: null
     },
     Template: {
       CLASS_MODIFICATOR: ``,
@@ -39,7 +46,7 @@ const filmListConfig = {
       IS_TITLE_HIDDEN: true
     },
     NAME: `general`,
-    sortProperty: `title`,
+    sortProperty: `default`,
     currentIndex: 0
   },
   TopRated: {
@@ -91,29 +98,6 @@ const filmEntites = new Array(filmListConfig.General.Count.MAX).fill(``).map((it
   return getRandomFilmEntity(i);
 });
 
-const getStatistic = (entites) => {
-  const statistic = {
-    favorited: 0,
-    watched: 0,
-    marked: 0
-  };
-
-  entites.forEach((item) => {
-    if (item.isFavorite) {
-      statistic.favorited++;
-    }
-
-    if (item.isWatched) {
-      statistic.watched++;
-    }
-
-    if (item.isMarked) {
-      statistic.marked++;
-    }
-  });
-
-  return statistic;
-};
 
 const getRaiting = (filmsCount) => {
   const raitingMap = new Map(Object.entries({
@@ -137,15 +121,14 @@ const headerElement = document.querySelector(`.${ClassName.HEADER}`);
 const mainElement = document.querySelector(`.${ClassName.MAIN}`);
 const contentElement = mainElement.querySelector(`.${ClassName.CONTENT}`);
 
-const statistic = getStatistic(filmEntites);
+const films = new Films(filmEntites);
+const statistic = films.getStatistic();
 const profile = new Profile(getRaiting(statistic.watched));
 profile.renderElement(headerElement);
 
-const pageController = new PageController(contentElement);
-pageController.render(filmEntites);
+const pageController = new PageController(contentElement, films);
+pageController.render(statistic);
 
-const navigation = new Navigation(statistic);
-navigation.renderElement(mainElement, `afterbegin`);
 
 const setFilmsCount = () => {
   const element = document.querySelector(`.${ClassName.FILMS_COUNT}`);

@@ -26,15 +26,15 @@ const getPersonNames = (count = 1) => {
 };
 
 const getCommentEntities = (count) => {
-  const comments = new Array(count).fill(``).map(() => {
+  return new Array(count).fill(``).map((item, i) => {
     return {
-      icon: utils.getRandomArrayElements(commentIconNames).toString(),
-      text: utils.getRandomArrayElements(mockSentences, 2).join(` `),
+      id: i,
+      emotion: utils.getRandomArrayElements(commentIconNames).toString(),
+      comment: utils.getRandomArrayElements(mockSentences, 2).join(` `),
       author: getPersonNames().toString(),
       date: utils.getRandomDate(-15, 0)
     };
   });
-  return utils.getRandomSet(comments);
 };
 
 const getUserRaiting = (isWatched) => {
@@ -55,14 +55,13 @@ const getRandomFilmEntity = (id) => {
     releaseDate: utils.getRandomDate(-50, 0),
     duration: getDurationEntity(),
     genres: utils.getRandomArrayElements(filmGenres, 3),
-    commentCount: utils.getRandomNumber(2, 7),
+    comments: getCommentEntities(utils.getRandomNumber(2, 7)),
     ageLimit: utils.getRandomNumber(0, 18),
     countryName: utils.getRandomArrayElements(countryNames).toString(),
     isWatched: utils.coinToss(),
     isFavorite: utils.coinToss(),
     isMarked: utils.coinToss()
   };
-  entity.comments = getCommentEntities(entity.commentCount);
   entity.userRaiting = getUserRaiting(entity.isWatched);
   return entity;
 };
